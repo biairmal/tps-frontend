@@ -17,6 +17,7 @@ function App() {
         >
           Learn React
         </a>
+        <div className="text-3xl font-bold underline">TESTINGTESTING</div>
       </header>
     </div>
   );
