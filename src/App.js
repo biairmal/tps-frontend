@@ -1,25 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { InformasiPenjualan, LoginPage, PageBase } from './pages';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <div className="text-3xl font-bold underline">TESTINGTESTING</div>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route element={<PageBase><Outlet /></PageBase>}>
+          <Route path="/dashboard" element={<InformasiPenjualan />} />
+          <Route path="/transactions" element={<InformasiPenjualan />} />
+          <Route path="/stocks" element={<InformasiPenjualan />} />
+          <Route path="/users" element={<InformasiPenjualan />} />
+          <Route path="/users/create" element={<InformasiPenjualan />} />
+          <Route path="/invoices" element={<InformasiPenjualan />} />
+          <Route path="/transactions/history" element={<InformasiPenjualan />} />
+          <Route path="/report" element={<InformasiPenjualan />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
