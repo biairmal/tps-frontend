@@ -1,7 +1,5 @@
 function InformasiPenjualan() {
-  return (
-    <div>Informasi Penjualan</div>
-  )
+  return <div>Informasi Penjualan</div>;
 }
 
-export default InformasiPenjualan
+export default InformasiPenjualan;

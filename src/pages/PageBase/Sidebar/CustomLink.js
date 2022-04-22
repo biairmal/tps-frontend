@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import { Link, useResolvedPath, useMatch } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function CustomLink({ children, to, ...props }) {
-  let resolved = useResolvedPath(to);
-  let match = useMatch({ path: resolved.pathname, end: true });
+  const location = useLocation();
+  let match = location.pathname.split('/')[1] === to.replace('/', '');
 
   return (
     <div>

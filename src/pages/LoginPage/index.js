@@ -1,13 +1,18 @@
-import TextInput from 'components/Forms/TextInput';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { TextInput } from 'components/Forms';
+import { loginSchema } from 'validations/authSchema';
 
 function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({ resolver: yupResolver(loginSchema) });
 
-  const buttonIsDisabled = () => {
-    if (username === '' || password === '') return true;
-    return false;
+  const submitForm = (data) => {
+    console.count('kepanggil');
+    console.log(data);
   };
 
   return (
@@ -18,30 +23,29 @@ function LoginPage() {
           <br />
         </h1>
         <div className="mt-8 mx-6">
-          <div className="space-y-4">
-            <TextInput
-              id="username"
-              name="username"
-              onChange={(e) => setUsername(e.target.value)}
-              label="Username"
-              placeholder="Masukkan username"
-            />
-            <TextInput
-              id="password"
-              name="password"
-              onChange={(e) => setPassword(e.target.value)}
-              label="Password"
-              placeholder="Masukkan password"
-              type="password"
-            />
-          </div>
+          <form onSubmit={handleSubmit(submitForm)}>
+            <div className="space-y-4">
+              <TextInput
+                label="Username"
+                name="username"
+                error={errors.username?.message}
+                register={register}
+                placeholder="Masukkan username"
+              />
+              <TextInput
+                label="Password"
+                name="password"
+                error={errors.password?.message}
+                register={register}
+                placeholder="Masukkan password"
+                type="password"
+              />
+            </div>
 
-          <button
-            disabled={buttonIsDisabled()}
-            className="bg-sky-400 disabled:opacity-50 mt-12 p-2 w-full rounded-lg text-lg text-white font-bold"
-          >
-            Login
-          </button>
+            <button className="bg-sky-400 disabled:opacity-50 mt-12 p-2 w-full rounded-lg text-lg text-white font-bold">
+              Login
+            </button>
+          </form>
         </div>
       </div>
     </div>

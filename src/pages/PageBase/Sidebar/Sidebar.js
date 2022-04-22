@@ -22,7 +22,7 @@ function Sidebar({ isHidden }) {
             */}
                 <ChevronDownIcon className={`h-6 w-6 ${open ? 'transform rotate-180' : ''}`} />
               </Disclosure.Button>
-              
+
               <Disclosure.Panel>
                 <SubCustomLink to="/invoices">Daftar Invoice</SubCustomLink>
                 <SubCustomLink to="/report">Laporan Penjualan</SubCustomLink>
