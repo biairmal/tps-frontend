@@ -1,26 +1,35 @@
+import PropTypes from 'prop-types';
 import Table from 'components/Table/Table';
 
-function UsersTable() {
+function UsersTable({ data, isLoading }) {
   const columns = [
     { Header: 'Username', accessor: 'username' },
     { Header: 'Nama depan', accessor: 'firstName' },
     { Header: 'Nama belakang', accessor: 'lastName' },
     { Header: 'Role', accessor: 'role' },
     {
-      Header: 'Aksi',
+      Header: ' ',
       Cell: () => {
-        return <div>test</div>;
+        return (
+          <div className="flex space-x-3 justify-center">
+            <div>
+              <button className="font-bold text-gray-700">Edit</button>
+            </div>
+            <div>
+              <button className="font-bold text-red-600">Hapus</button>
+            </div>
+          </div>
+        );
       }
     }
   ];
 
-  const data = [
-    { id: 1, username: 'test1', firstName: 'Test', lastName: '1', role: 'admin' },
-    { id: 2, username: 'test2', firstName: 'Test', lastName: '2', role: 'admin' },
-    { id: 3, username: 'test3', firstName: 'Test', lastName: '3', role: 'admin' }
-  ];
-
-  return <Table columns={columns} data={data} />;
+  return <Table columns={columns} data={data} isLoading={isLoading} />;
 }
+
+UsersTable.propTypes = {
+  data: PropTypes.array,
+  isLoading: PropTypes.bool
+};
 
 export default UsersTable;

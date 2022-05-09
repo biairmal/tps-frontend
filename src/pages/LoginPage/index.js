@@ -2,17 +2,27 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TextInput } from 'components/Forms';
 import { loginSchema } from 'validations/authSchema';
+import authAPI from 'api/authAPI';
+import { UserContext } from 'context/UserContext';
+import { useContext } from 'react';
+import { Navigate } from 'react-router-dom';
 
 function LoginPage() {
+  const { user, setUser } = useContext(UserContext);
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm({ resolver: yupResolver(loginSchema) });
 
-  const submitForm = (data) => {
-    console.count('kepanggil');
-    console.log(data);
+  const submitForm = async (data) => {
+    try {
+      const res = await authAPI.login(data);
+      console.log(res);
+      setUser(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -48,6 +58,7 @@ function LoginPage() {
           </form>
         </div>
       </div>
+      {user && <Navigate to="/dashboard" />}
     </div>
   );
 }

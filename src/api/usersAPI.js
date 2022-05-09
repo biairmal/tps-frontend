@@ -4,8 +4,8 @@ const usersAPI = {
   createUser(data) {
     return Api.post('/users', data);
   },
-  getUsers() {
-    return Api.get('/users');
+  getUsers(options) {
+    return Api.get(`/users?limit=${options.limit}&page=${options.page}`);
   },
   getUserById(id) {
     return Api.get(`/users/${id}`);

@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TextInput, SelectInput } from 'components/Forms';
 import { createUserSchema } from 'validations/userSchema';
+import usersAPI from 'api/usersAPI';
 
 function CreateUserPage() {
   const roleOptions = [
@@ -19,9 +20,13 @@ function CreateUserPage() {
     mode: 'onTouched'
   });
 
-  const submitForm = (data) => {
-    console.count('kepanggil');
-    console.log(data);
+  const submitForm = async (data) => {
+    try {
+      const res = await usersAPI.createUser(data);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
