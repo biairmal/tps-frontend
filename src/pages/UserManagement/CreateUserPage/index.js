@@ -3,6 +3,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { TextInput, SelectInput } from 'components/Forms';
 import { createUserSchema } from 'validations/userSchema';
 import usersAPI from 'api/usersAPI';
+import { useContext } from 'react';
+import { SnackbarContext } from 'context/SnackbarContext';
+import { useNavigate } from 'react-router-dom';
 
 function CreateUserPage() {
   const roleOptions = [
@@ -20,10 +23,18 @@ function CreateUserPage() {
     mode: 'onTouched'
   });
 
+  const snackbarRef = useContext(SnackbarContext);
+  const navigate = useNavigate();
+
   const submitForm = async (data) => {
     try {
       const res = await usersAPI.createUser(data);
-      console.log(res);
+      if (res.status === 201) {
+        navigate('/users', { replace: true });
+        setTimeout(() => {
+          snackbarRef.current.success('Berhasil membuat pengguna!');
+        }, 1000);
+      }
     } catch (error) {
       console.log(error);
     }

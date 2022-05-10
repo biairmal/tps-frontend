@@ -26,7 +26,7 @@ function Pagination({ currentPage, setCurrentPage, hasNext, hasPrev, totalPages 
     <>
       <div className="flex justify-between py-6 px-2">
         <div>
-          Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
+          Halaman <strong>{currentPage}</strong> dari <strong>{totalPages}</strong>
         </div>
         <div className="flex items-center space-x-1">
           <Button

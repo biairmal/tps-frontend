@@ -1,12 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
 import usersAPI from 'api/usersAPI';
 import UsersTable from './UsersTable';
 import Pagination from 'components/Table/Pagination';
 import PageSize from 'components/Table/PageSize';
+import ConfirmationModal from 'components/Modal/ConfirmationModal';
+import { SnackbarContext } from 'context/SnackbarContext';
 
 function ManageUserPage() {
+  const snackbarRef = useContext(SnackbarContext);
+
   const [pageData, setPageData] = useState({
     rowData: [],
     isLoading: false,
@@ -17,7 +21,42 @@ function ManageUserPage() {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(2);
+  const [pageSize, setPageSize] = useState(10);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setSelectedUser(null);
+  };
+
+  const deleteUser = async () => {
+    const res = await usersAPI.deleteUserById(selectedUser);
+    closeModal();
+    if (res.status === 200) {
+      fetchData();
+      snackbarRef.current.success('Berhasil menghapus pengguna!');
+    } else {
+      console.log('error');
+    }
+  };
+
+  const fetchData = async () => {
+    const res = await usersAPI.getUsers({ page: currentPage, limit: pageSize });
+    setPageData({
+      isLoading: false,
+      rowData: res.data.data.edge,
+      totalPages: res.data.data.cursor.totalPages,
+      totalRows: res.data.data.cursor.totalRows,
+      hasNext: res.data.data.cursor.hasNext,
+      hasPrev: res.data.data.cursor.hasPrev,
+      size: res.data.data.cursor.size
+    });
+  };
 
   useEffect(() => {
     setPageData((prevState) => ({
@@ -26,18 +65,7 @@ function ManageUserPage() {
       isLoading: true
     }));
 
-    usersAPI.getUsers({ page: currentPage, limit: pageSize }).then((res) => {
-      console.log(res);
-      setPageData({
-        isLoading: false,
-        rowData: res.data.data.edge,
-        totalPages: res.data.data.cursor.totalPages,
-        totalRows: res.data.data.cursor.totalRows,
-        hasNext: res.data.data.cursor.hasNext,
-        hasPrev: res.data.data.cursor.hasPrev,
-        size: res.data.data.cursor.size
-      });
-    });
+    fetchData();
   }, [currentPage, pageSize]);
 
   return (
@@ -48,7 +76,7 @@ function ManageUserPage() {
         <h2 className="text-2xl">Daftar Pengguna</h2>
         <div className="max-w-7xl">
           <Link to="/users/create" className="w-min">
-            <button className="text-sky-500 underline font-semibold rounded-md w-max">
+            <button className="border-2 border-sky-500 text-sky-500 text-sm py-2 px-4 font-semibold rounded-md w-max">
               Tambahkan Pengguna +
             </button>
           </Link>
@@ -57,9 +85,14 @@ function ManageUserPage() {
               <PulseLoader color={'gray'} size={15} />
             </div>
           ) : (
-            <>
+            <div className="mt-6">
               <PageSize pageSize={pageSize} setPageSize={setPageSize} />
-              <UsersTable data={pageData.rowData} isLoading={pageData.isLoading} />
+              <UsersTable
+                data={pageData.rowData}
+                isLoading={pageData.isLoading}
+                openModal={openModal}
+                setSelected={setSelectedUser}
+              />
               <Pagination
                 currentPage={currentPage}
                 hasNext={pageData.hasNext}
@@ -67,8 +100,17 @@ function ManageUserPage() {
                 setCurrentPage={setCurrentPage}
                 totalPages={pageData.totalPages}
               />
-            </>
+            </div>
           )}
+          <ConfirmationModal
+            isOpen={modalIsOpen}
+            closeModal={closeModal}
+            title="Hapus Pengguna?"
+            description="Apakah anda yakin ingin menghapus pengguna ini? Penghapusan tidak dapat dibatalkan setelah dilakukan."
+            proceed="Hapus"
+            cancel="Batalkan"
+            handler={deleteUser}
+          />
         </div>
       </div>
     </>

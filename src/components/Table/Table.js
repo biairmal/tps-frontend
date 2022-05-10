@@ -41,7 +41,11 @@ function Table({ columns, data, isLoading }) {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr key={row.id} {...row.getRowProps()} className="tr bg-white">
+                <tr
+                  key={row.id}
+                  {...row.getRowProps()}
+                  className="tr bg-white odd:bg-gray-50 text-center"
+                >
                   {row.cells.map((cell, index) => (
                     <td key={index} className="py-2 px-8 ">
                       {cell.render('Cell')}

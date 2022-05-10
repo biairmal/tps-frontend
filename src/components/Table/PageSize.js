@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 function PageSize({ pageSize, setPageSize }) {
   return (
     <div className="select-none">
-      <span className="">
-        Show
+      <div className="flex space-x-2 items-center">
+        <div>Tampilkan</div>
         <select
           className="mx-1 rounded-md p-1 focus:outline-none shadow"
-          onChange={(e) => setPageSize(e.target.value)}
+          onChange={(e) => setPageSize(parseInt(e.target.value, 10))}
           value={pageSize}
         >
           {[10, 20, 30].map((size) => (
@@ -16,8 +16,8 @@ function PageSize({ pageSize, setPageSize }) {
             </option>
           ))}
         </select>
-        Entries
-      </span>
+        <div>Row</div>
+      </div>
     </div>
   );
 }
