@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 function TextInput(props) {
-  const { type, id, placeholder, name, label, onChange, register, error } = props;
+  const { type, id, placeholder, name, label, onChange, register, error, disabled } = props;
   return (
     <div>
       <div className="font-medium">{label}</div>
@@ -14,6 +14,7 @@ function TextInput(props) {
         placeholder={placeholder}
         onChange={onChange}
         type={type}
+        disabled={disabled}
         {...register(name)}
       />
       <p className={`text-sm text-rose-500 text-right ${error && '-mb-4'}`}>{error || ''}</p>
@@ -26,7 +27,8 @@ TextInput.defaultProps = {
   name: '',
   placeholder: '',
   type: 'text',
-  error: ''
+  error: '',
+  disabled: false
 };
 
 TextInput.propTypes = {
@@ -37,7 +39,8 @@ TextInput.propTypes = {
   placeholder: PropTypes.string,
   type: PropTypes.string,
   register: PropTypes.any,
-  error: PropTypes.any
+  error: PropTypes.any,
+  disabled: PropTypes.bool
 };
 
 export default TextInput;

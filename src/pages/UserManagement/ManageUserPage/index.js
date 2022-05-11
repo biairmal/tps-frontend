@@ -1,19 +1,19 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { PulseLoader } from 'react-spinners';
 import usersAPI from 'api/usersAPI';
-import UsersTable from './UsersTable';
+import ConfirmationModal from 'components/Modal/ConfirmationModal';
+import Loader from 'components/Loader/Loader';
 import Pagination from 'components/Table/Pagination';
 import PageSize from 'components/Table/PageSize';
-import ConfirmationModal from 'components/Modal/ConfirmationModal';
 import { SnackbarContext } from 'context/SnackbarContext';
+import UsersTable from './UsersTable';
 
 function ManageUserPage() {
   const snackbarRef = useContext(SnackbarContext);
 
   const [pageData, setPageData] = useState({
-    rowData: [],
     isLoading: false,
+    rowData: [],
     totalPages: 0,
     totalRows: 0,
     hasNext: false,
@@ -80,10 +80,9 @@ function ManageUserPage() {
               Tambahkan Pengguna +
             </button>
           </Link>
+
           {pageData.isLoading ? (
-            <div className="w-full mt-12 mx-auto flex justify-center">
-              <PulseLoader color={'gray'} size={15} />
-            </div>
+            <Loader />
           ) : (
             <div className="mt-6">
               <PageSize pageSize={pageSize} setPageSize={setPageSize} />
@@ -102,6 +101,7 @@ function ManageUserPage() {
               />
             </div>
           )}
+
           <ConfirmationModal
             isOpen={modalIsOpen}
             closeModal={closeModal}

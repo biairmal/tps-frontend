@@ -2,7 +2,14 @@ import { useMemo, useRef } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { UserContext } from 'context/UserContext';
 import ProtectedOutlet from 'components/Navigation/ProtectedOutlet';
-import { InformasiPenjualan, LoginPage, PageBase, ManageUserPage, CreateUserPage } from './pages';
+import {
+  InformasiPenjualan,
+  LoginPage,
+  PageBase,
+  ManageUserPage,
+  CreateUserPage,
+  EditUserPage
+} from './pages';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import Snackbar from 'components/Notification/Snackbar';
 import { SnackbarContext } from 'context/SnackbarContext';
@@ -39,6 +46,7 @@ function App() {
               <Route path="/stocks" element={<InformasiPenjualan />} />
               <Route path="/users" element={<ManageUserPage />} />
               <Route path="/users/create" element={<CreateUserPage />} />
+              <Route path="/users/:id/edit" element={<EditUserPage />} />
               <Route path="/invoices" element={<InformasiPenjualan />} />
               <Route path="/transactions/history" element={<InformasiPenjualan />} />
               <Route path="/report" element={<InformasiPenjualan />} />

@@ -10,8 +10,8 @@ const usersAPI = {
   getUserById(id) {
     return Api.get(`/users/${id}`);
   },
-  updateUser(data) {
-    return Api.put('/users', data);
+  updateUser(id, data) {
+    return Api.put(`/users/${id}`, data);
   },
   deleteUserById(id) {
     return Api.delete(`/users/${id}`);

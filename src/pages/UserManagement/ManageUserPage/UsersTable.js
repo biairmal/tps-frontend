@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { PencilAltIcon, TrashIcon } from '@heroicons/react/outline';
 import Table from 'components/Table/Table';
 import roles from 'config/roles';
+import { useNavigate } from 'react-router-dom';
 
 function UsersTable({ data, isLoading, openModal, setSelected }) {
   const columns = [
@@ -29,6 +30,8 @@ UsersTable.propTypes = {
 };
 
 const ActionColumn = ({ row, openModal, setSelected }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex space-x-4 justify-center">
       <div>
@@ -36,7 +39,7 @@ const ActionColumn = ({ row, openModal, setSelected }) => {
           className="text-gray-700"
           title="Edit"
           onClick={() => {
-            setSelected(row.original.id);
+            navigate(`/users/${row.original.id}/edit`);
           }}
         >
           <PencilAltIcon className="w-4 h-4" />
