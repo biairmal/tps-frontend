@@ -1,18 +1,20 @@
 import PropTypes from 'prop-types';
 import { PencilAltIcon, TrashIcon } from '@heroicons/react/outline';
 import Table from 'components/Table/Table';
-import roles from 'config/roles';
 import { useNavigate } from 'react-router-dom';
 
-function UsersTable({ data, isLoading, openModal, setSelected }) {
+function ItemTable({ data, isLoading, openModal, setSelected }) {
   const columns = [
-    { Header: 'Username', accessor: 'username' },
-    { Header: 'Nama depan', accessor: 'firstName' },
-    { Header: 'Nama belakang', accessor: 'lastName' },
-    {
-      Header: 'Role',
-      Cell: (props) => <FormattedRole {...props} />
-    },
+    { Header: 'Kode', accessor: 'code' },
+    { Header: 'Nama', accessor: 'name' },
+    { Header: 'Foto', Cell: (props) => <ItemImage {...props} /> },
+    { Header: 'Deskripsi', accessor: 'description' },
+    { Header: 'Jumlah', accessor: 'quantity' },
+    { Header: 'COGS', accessor: 'cogs' },
+    { Header: 'Harga Normal', accessor: 'normalPrice' },
+    { Header: 'Harga Dealer', accessor: 'dealerPrice' },
+    { Header: 'Discount', accessor: 'discount' },
+    { Header: 'Pajak', accessor: 'tax' },
     {
       Header: ' ',
       Cell: (props) => <ActionColumn {...props} openModal={openModal} setSelected={setSelected} />
@@ -22,11 +24,26 @@ function UsersTable({ data, isLoading, openModal, setSelected }) {
   return <Table columns={columns} data={data} isLoading={isLoading} />;
 }
 
-UsersTable.propTypes = {
+ItemTable.propTypes = {
   data: PropTypes.array,
   isLoading: PropTypes.bool,
   openModal: PropTypes.func,
   setSelected: PropTypes.func
+};
+
+const ItemImage = ({ row }) => {
+  if (row.original.picture) {
+    return (
+      <div className="w-40 h-24 rounded-md">
+        <img alt="Item" className="object-contain w-full h-full" src={row.original.picture} />
+      </div>
+    );
+  }
+  return <div className="w-40 h-24 rounded-md bg-gray-200"></div>;
+};
+
+ItemImage.propTypes = {
+  row: PropTypes.object
 };
 
 const ActionColumn = ({ row, openModal, setSelected }) => {
@@ -39,7 +56,7 @@ const ActionColumn = ({ row, openModal, setSelected }) => {
           className="text-gray-700"
           title="Edit"
           onClick={() => {
-            navigate(`/users/${row.original.id}/edit`);
+            navigate(`/items/${row.original.id}/edit`);
           }}
         >
           <PencilAltIcon className="w-4 h-4" />
@@ -67,6 +84,4 @@ ActionColumn.propTypes = {
   setSelected: PropTypes.func
 };
 
-const FormattedRole = ({ row }) => roles[row?.original?.role];
-
-export default UsersTable;
+export default ItemTable;

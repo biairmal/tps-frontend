@@ -6,9 +6,12 @@ import {
   InformasiPenjualan,
   LoginPage,
   PageBase,
-  ManageUserPage,
   CreateUserPage,
-  EditUserPage
+  EditUserPage,
+  ManageUsersPage,
+  CreateItemPage,
+  EditItemPage,
+  ManageItemsPage
 } from './pages';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import Snackbar from 'components/Notification/Snackbar';
@@ -43,8 +46,12 @@ function App() {
               <Route path="/" element={<InformasiPenjualan />} />
               <Route path="/dashboard" element={<InformasiPenjualan />} />
               <Route path="/transactions" element={<InformasiPenjualan />} />
-              <Route path="/stocks" element={<InformasiPenjualan />} />
-              <Route path="/users" element={<ManageUserPage />} />
+              {/* Item Management */}
+              <Route path="/items" element={<ManageItemsPage />} />
+              <Route path="/items/create" element={<CreateItemPage />} />
+              <Route path="/items/:id/edit" element={<EditItemPage />} />
+              {/* User Management */}
+              <Route path="/users" element={<ManageUsersPage />} />
               <Route path="/users/create" element={<CreateUserPage />} />
               <Route path="/users/:id/edit" element={<EditUserPage />} />
               <Route path="/invoices" element={<InformasiPenjualan />} />

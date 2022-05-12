@@ -22,7 +22,7 @@ function Sidebar({ isHidden }) {
         <div>
           <CustomLink to="/dashboard">Dashboard</CustomLink>
           <CustomLink to="/transactions">Panel Transaksi</CustomLink>
-          <CustomLink to="/stocks">Manajemen Stok</CustomLink>
+          <CustomLink to="/items">Manajemen Stok</CustomLink>
           <Disclosure defaultOpen={true}>
             {({ open }) => (
               <div className="w-full text-left font-bold">

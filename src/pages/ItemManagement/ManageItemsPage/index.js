@@ -1,14 +1,14 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import usersAPI from 'api/usersAPI';
+import itemsAPI from 'api/itemsAPI';
 import ConfirmationModal from 'components/Modal/ConfirmationModal';
 import Loader from 'components/Loader/Loader';
 import Pagination from 'components/Table/Pagination';
 import PageSize from 'components/Table/PageSize';
 import { SnackbarContext } from 'context/SnackbarContext';
-import UsersTable from './UsersTable';
+import ItemTable from './ItemTable';
 
-function ManageUserPage() {
+function ManageItemPage() {
   const snackbarRef = useContext(SnackbarContext);
 
   const [pageData, setPageData] = useState({
@@ -23,7 +23,7 @@ function ManageUserPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -31,22 +31,22 @@ function ManageUserPage() {
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setSelectedUser(null);
+    setSelectedItem(null);
   };
 
-  const deleteUser = async () => {
-    const res = await usersAPI.deleteUserById(selectedUser);
+  const deleteItem = async () => {
+    const res = await itemsAPI.deleteItemById(selectedItem);
     closeModal();
     if (res.status === 200) {
       fetchData();
-      snackbarRef.current.success('Berhasil menghapus pengguna!');
+      snackbarRef.current.success('Berhasil menghapus barang!');
     } else {
       console.log('error');
     }
   };
 
   const fetchData = async () => {
-    const res = await usersAPI.getUsers({ page: currentPage, limit: pageSize });
+    const res = await itemsAPI.getItems({ page: currentPage, limit: pageSize });
     setPageData({
       isLoading: false,
       rowData: res.data.data.edge,
@@ -70,14 +70,14 @@ function ManageUserPage() {
 
   return (
     <>
-      <h1 className="text-5xl text-sky-500 font-medium">Akun dan Pengguna</h1>
+      <h1 className="text-5xl text-sky-500 font-medium">Manajemen Barang</h1>
 
       <div className="mt-12 flex flex-col space-y-8">
-        <h2 className="text-2xl">Daftar Pengguna</h2>
+        <h2 className="text-2xl">Daftar Barang</h2>
         <div className="max-w-7xl">
-          <Link to="/users/create" className="w-min">
+          <Link to="/items/create" className="w-min">
             <button className="border-2 border-sky-500 text-sky-500 text-sm py-2 px-4 font-semibold rounded-md w-max">
-              Tambahkan Pengguna +
+              Tambahkan Barang +
             </button>
           </Link>
 
@@ -86,11 +86,11 @@ function ManageUserPage() {
           ) : (
             <div className="mt-6">
               <PageSize pageSize={pageSize} setPageSize={setPageSize} />
-              <UsersTable
+              <ItemTable
                 data={pageData.rowData}
                 isLoading={pageData.isLoading}
                 openModal={openModal}
-                setSelected={setSelectedUser}
+                setSelected={setSelectedItem}
               />
               <Pagination
                 currentPage={currentPage}
@@ -105,11 +105,11 @@ function ManageUserPage() {
           <ConfirmationModal
             isOpen={modalIsOpen}
             closeModal={closeModal}
-            title="Hapus Pengguna?"
-            description="Apakah anda yakin ingin menghapus pengguna ini? Penghapusan tidak dapat dibatalkan setelah dilakukan."
+            title="Hapus Barang?"
+            description="Apakah anda yakin ingin menghapus barang ini? Penghapusan tidak dapat dibatalkan setelah dilakukan."
             proceed="Hapus"
             cancel="Batalkan"
-            handler={deleteUser}
+            handler={deleteItem}
           />
         </div>
       </div>
@@ -117,4 +117,4 @@ function ManageUserPage() {
   );
 }
 
-export default ManageUserPage;
+export default ManageItemPage;

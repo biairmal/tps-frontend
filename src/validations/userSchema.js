@@ -15,9 +15,7 @@ export const createUserSchema = yup.object().shape({
 export const updateUserSchema = yup.object().shape({
   username: yup.string(),
   password: yup.string(),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref('password'), null], 'Password tidak cocok'),
+  confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Password tidak cocok'),
   firstName: yup.string(),
   lastName: yup.string(),
   role: yup.string()

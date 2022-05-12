@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { TextInput, SelectInput } from 'components/Forms';
 import { updateUserSchema } from 'validations/userSchema';
 import usersAPI from 'api/usersAPI';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { SnackbarContext } from 'context/SnackbarContext';
 import { useNavigate, useParams } from 'react-router-dom';
 

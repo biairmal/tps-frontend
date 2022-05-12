@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { TextInput, SelectInput } from 'components/Forms';
+import { PasswordInput, SelectInput, SubmitButton, TextInput } from 'components/Forms';
 import { createUserSchema } from 'validations/userSchema';
 import usersAPI from 'api/usersAPI';
 import { useContext } from 'react';
@@ -54,51 +54,47 @@ function CreateUserPage() {
               name="username"
               error={errors.username?.message}
               register={register}
-              placeholder="Masukkan username"
+              placeholder="Masukkan username..."
             />
-            <TextInput
+            <PasswordInput
               label="Password*"
               name="password"
               error={errors.password?.message}
               register={register}
-              placeholder="Masukkan password"
-              type="password"
+              placeholder="Masukkan password..."
             />
-            <TextInput
+            <PasswordInput
               label="Konfirmasi Password*"
               name="confirmPassword"
               error={errors.confirmPassword?.message}
               register={register}
-              placeholder="Masukkan ulang password"
-              type="password"
+              placeholder="Masukkan ulang password..."
             />
             <TextInput
               label="Nama Depan*"
               name="firstName"
               error={errors.firstName?.message}
               register={register}
-              placeholder="Masukkan nama depan"
+              placeholder="Masukkan nama depan..."
             />
             <TextInput
               label="Nama Belakang"
               name="lastName"
               error={errors.lastName?.message}
               register={register}
-              placeholder="Masukkan nama belakang"
+              placeholder="Masukkan nama belakang..."
             />
             <SelectInput
-              label="Role"
+              label="Role*"
               name="role"
               error={errors.role?.message}
               register={register}
-              placeholder="Tentukan Role"
+              placeholder="Tentukan Role..."
               defaultValue={1}
               options={roleOptions}
             />
             <div className="pt-4">
-              <button type="submit" className="bg-sky-500 text-white py-2 px-4 rounded-md w-max">
-                Tambahkan Pengguna
-              </button>
+              <SubmitButton text="Tambahkan Pengguna" />
             </div>
           </form>
         </div>
