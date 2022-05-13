@@ -10,7 +10,7 @@ function PageBase({ children }) {
       <Navbar toggleSidebar={setHideSidebar} />
       <div className="w-full flex flex-row">
         <Sidebar isHidden={hideSidebar} />
-        <main className="flex-1 pt-24 pl-12 pb-32 pr-8 overscroll-contain">{children}</main>
+        <main className="flex-1 pt-24 pb-32 px-12 overscroll-contain">{children}</main>
       </div>
     </div>
   );

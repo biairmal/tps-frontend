@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
 import itemsAPI from 'api/itemsAPI';
 import ConfirmationModal from 'components/Modal/ConfirmationModal';
 import Loader from 'components/Loader/Loader';
@@ -7,6 +6,8 @@ import Pagination from 'components/Table/Pagination';
 import PageSize from 'components/Table/PageSize';
 import { SnackbarContext } from 'context/SnackbarContext';
 import ItemTable from './ItemTable';
+import { Heading, SubHeading } from 'components/Text';
+import LinkButton from 'components/Navigation/LinkButton';
 
 function ManageItemPage() {
   const snackbarRef = useContext(SnackbarContext);
@@ -69,39 +70,29 @@ function ManageItemPage() {
   }, [currentPage, pageSize]);
 
   return (
-    <>
-      <h1 className="text-5xl text-sky-500 font-medium">Manajemen Barang</h1>
+    <div className="flex flex-col space-y-8">
+      <Heading>Manajemen Barang</Heading>
+      <SubHeading>Daftar Barang</SubHeading>
+      <LinkButton>Tambahkan Barang +</LinkButton>
 
-      <div className="mt-12 flex flex-col space-y-8">
-        <h2 className="text-2xl">Daftar Barang</h2>
-        <div className="max-w-7xl">
-          <Link to="/items/create" className="w-min">
-            <button className="border-2 border-sky-500 text-sky-500 text-sm py-2 px-4 font-semibold rounded-md w-max">
-              Tambahkan Barang +
-            </button>
-          </Link>
-
-          {pageData.isLoading ? (
-            <Loader />
-          ) : (
-            <div className="mt-6">
-              <PageSize pageSize={pageSize} setPageSize={setPageSize} />
-              <ItemTable
-                data={pageData.rowData}
-                isLoading={pageData.isLoading}
-                openModal={openModal}
-                setSelected={setSelectedItem}
-              />
-              <Pagination
-                currentPage={currentPage}
-                hasNext={pageData.hasNext}
-                hasPrev={pageData.hasPrev}
-                setCurrentPage={setCurrentPage}
-                totalPages={pageData.totalPages}
-              />
-            </div>
-          )}
-
+      {pageData.isLoading ? (
+        <Loader />
+      ) : (
+        <div>
+          <PageSize pageSize={pageSize} setPageSize={setPageSize} />
+          <ItemTable
+            data={pageData.rowData}
+            isLoading={pageData.isLoading}
+            openModal={openModal}
+            setSelected={setSelectedItem}
+          />
+          <Pagination
+            currentPage={currentPage}
+            hasNext={pageData.hasNext}
+            hasPrev={pageData.hasPrev}
+            setCurrentPage={setCurrentPage}
+            totalPages={pageData.totalPages}
+          />
           <ConfirmationModal
             isOpen={modalIsOpen}
             closeModal={closeModal}
@@ -112,8 +103,8 @@ function ManageItemPage() {
             handler={deleteItem}
           />
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }
 

@@ -1,3 +1,4 @@
+export { default as ImageInput } from './ImageInput';
 export { default as NumberInput } from './NumberInput';
 export { default as PasswordInput } from './PasswordInput';
 export { default as SelectInput } from './SelectInput';

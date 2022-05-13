@@ -8,11 +8,11 @@ function ItemTable({ data, isLoading, openModal, setSelected }) {
     { Header: 'Kode', accessor: 'code' },
     { Header: 'Nama', accessor: 'name' },
     { Header: 'Foto', Cell: (props) => <ItemImage {...props} /> },
-    { Header: 'Deskripsi', accessor: 'description' },
+    { Header: 'Deskripsi', Cell: (props) => <Description {...props} /> },
     { Header: 'Jumlah', accessor: 'quantity' },
-    { Header: 'COGS', accessor: 'cogs' },
-    { Header: 'Harga Normal', accessor: 'normalPrice' },
-    { Header: 'Harga Dealer', accessor: 'dealerPrice' },
+    { Header: 'COGS', Cell: (props) => <ItemPrice {...props} columnName="cogs" /> },
+    { Header: 'Harga Normal', Cell: (props) => <ItemPrice {...props} columnName="normalPrice" /> },
+    { Header: 'Harga Dealer', Cell: (props) => <ItemPrice {...props} columnName="dealerPrice" /> },
     { Header: 'Discount', accessor: 'discount' },
     { Header: 'Pajak', accessor: 'tax' },
     {
@@ -31,10 +31,33 @@ ItemTable.propTypes = {
   setSelected: PropTypes.func
 };
 
+const ItemPrice = ({ row, columnName }) => {
+  const priceArr = row.original[columnName].toString();
+  const split = priceArr.split(',');
+  let sisa = split[0].length % 3;
+  let rupiah = split[0].substr(0, sisa);
+  let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+  // tambahkan titik jika yang di input sudah menjadi angka ribuan
+  if (ribuan) {
+    let separator = sisa ? '.' : '';
+    rupiah += separator + ribuan.join('.');
+  }
+
+  rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+  return <div className="whitespace-nowrap">Rp. {rupiah},-</div>;
+};
+
+ItemPrice.propTypes = {
+  columnName: PropTypes.string,
+  prefix: PropTypes.string,
+  row: PropTypes.object
+};
+
 const ItemImage = ({ row }) => {
   if (row.original.picture) {
     return (
-      <div className="w-40 h-24 rounded-md">
+      <div className="aspect-video w-32 my-2 rounded-md overflow-hidden">
         <img alt="Item" className="object-contain w-full h-full" src={row.original.picture} />
       </div>
     );
@@ -43,6 +66,14 @@ const ItemImage = ({ row }) => {
 };
 
 ItemImage.propTypes = {
+  row: PropTypes.object
+};
+
+const Description = ({ row }) => {
+  return <p>{row.original.description}</p>;
+};
+
+Description.propTypes = {
   row: PropTypes.object
 };
 

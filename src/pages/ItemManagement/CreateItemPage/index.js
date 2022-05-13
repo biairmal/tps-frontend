@@ -1,28 +1,37 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { SubmitButton, TextInput, TextAreaInput, NumberInput } from 'components/Forms';
+import { ImageInput, NumberInput, SubmitButton, TextInput, TextAreaInput } from 'components/Forms';
 import { createItemSchema } from 'validations/itemSchema';
 import itemsAPI from 'api/itemsAPI';
 import { useContext } from 'react';
 import { SnackbarContext } from 'context/SnackbarContext';
 import { useNavigate } from 'react-router-dom';
+import { Heading, SubHeading } from 'components/Text';
 
 function CreateItemPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(createItemSchema),
     mode: 'onTouched'
   });
 
+  const watchImage = watch('picture');
+
   const snackbarRef = useContext(SnackbarContext);
   const navigate = useNavigate();
 
   const submitForm = async (data) => {
     try {
-      const res = await itemsAPI.createItem(data);
+      const uploadedImage = data.picture ? data.picture[0] : undefined;
+      const itemForm = document.getElementById('item_form');
+      const formData = new FormData(itemForm);
+      formData.set('picture', uploadedImage);
+
+      const res = await itemsAPI.createItem(formData);
       if (res.status === 201) {
         navigate('/items', { replace: true });
         setTimeout(() => {
@@ -35,115 +44,102 @@ function CreateItemPage() {
   };
 
   return (
-    <>
-      <h1 className="text-5xl text-sky-500 font-medium">Manajemen Barang</h1>
+    <div className="flex flex-col space-y-8">
+      <Heading>Manajemen Barang</Heading>
+      <SubHeading>Tambahkan Barang</SubHeading>
 
-      <div className="mt-12 flex flex-col space-y-8">
-        <h2 className="text-2xl">Tambahkan Barang</h2>
+      <form id="item_form" onSubmit={handleSubmit(submitForm)}>
+        <div className="flex flex-col xl:flex-row w-full space-y-4 xl:space-y-0 xl:space-x-16 mb-8">
+          {/* Left content */}
+          <div className="space-y-4 flex-1 max-w-lg">
+            <TextInput
+              error={errors.code?.message}
+              label="Kode Barang*"
+              name="code"
+              placeholder="Masukkan kode barang..."
+              register={register}
+            />
+            <TextInput
+              error={errors.name?.message}
+              label="Nama Barang*"
+              name="name"
+              placeholder="Masukkan nama barang..."
+              register={register}
+            />
+            <NumberInput
+              error={errors.quantity?.message}
+              label="Jumlah*"
+              min={0}
+              name="quantity"
+              placeholder="Masukkan jumlah..."
+              register={register}
+              type="number"
+            />
+            <NumberInput
+              error={errors.cogs?.message}
+              label="Modal penjualan*"
+              min={0}
+              name="cogs"
+              placeholder="Masukkan modal penjualan..."
+              register={register}
+              type="number"
+            />
+            <NumberInput
+              error={errors.normalPrice?.message}
+              label="Harga Normal*"
+              min={0}
+              name="normalPrice"
+              placeholder="Masukkan harga normal..."
+              register={register}
+            />
+            <NumberInput
+              error={errors.dealerPrice?.message}
+              label="Harga Dealer*"
+              min={0}
+              name="dealerPrice"
+              placeholder="Masukkan harga dealer..."
+              register={register}
+            />
+            <NumberInput
+              error={errors.tax?.message}
+              label="Pajak"
+              max={100}
+              min={0}
+              name="tax"
+              placeholder="Masukkan pajak... (%)"
+              register={register}
+            />
+            <NumberInput
+              error={errors.discount?.message}
+              label="Discount"
+              max={100}
+              min={0}
+              name="discount"
+              placeholder="Masukkan discount... (%)"
+              register={register}
+            />
+          </div>
+          {/* Right content */}
+          <div className="flex-1 max-w-md space-y-4">
+            <ImageInput
+              label="Foto Produk"
+              name="picture"
+              register={register}
+              watchImage={watchImage}
+            />
 
-        <form onSubmit={handleSubmit(submitForm)}>
-          <div className="flex flex-row w-full space-x-16">
-            <div className="space-y-4 flex-1 max-w-lg">
-              <TextInput
-                error={errors.code?.message}
-                label="Kode Barang*"
-                name="code"
-                placeholder="Masukkan kode barang..."
-                register={register}
-              />
-              <TextInput
-                error={errors.name?.message}
-                label="Nama Barang*"
-                name="name"
-                placeholder="Masukkan nama barang..."
-                register={register}
-              />
-              <NumberInput
-                error={errors.quantity?.message}
-                label="Jumlah*"
-                min={0}
-                name="quantity"
-                placeholder="Masukkan jumlah..."
-                register={register}
-                type="number"
-              />
-              <NumberInput
-                error={errors.cogs?.message}
-                label="Modal penjualan*"
-                min={0}
-                name="cogs"
-                placeholder="Masukkan modal penjualan..."
-                register={register}
-                type="number"
-              />
-              <NumberInput
-                error={errors.normalPrice?.message}
-                label="Harga Normal*"
-                min={0}
-                name="normalPrice"
-                placeholder="Masukkan harga normal..."
-                register={register}
-              />
-              <NumberInput
-                error={errors.dealerPrice?.message}
-                label="Harga Dealer*"
-                min={0}
-                name="dealerPrice"
-                placeholder="Masukkan harga dealer..."
-                register={register}
-              />
-              <NumberInput
-                error={errors.tax?.message}
-                label="Pajak"
-                max={100}
-                min={0}
-                name="tax"
-                placeholder="Masukkan pajak... (%)"
-                register={register}
-              />
-              <NumberInput
-                error={errors.discount?.message}
-                label="Discount"
-                max={100}
-                min={0}
-                name="discount"
-                placeholder="Masukkan discount... (%)"
-                register={register}
-              />
-            </div>
-            <div className="flex-1 max-w-md space-y-4">
-              <div className="font-medium">Foto Produk</div>
-              <div className="w-full aspect-video bg-gray-100 rounded-lg"></div>
-              <label className="mt-4 block border-2 rounded-lg">
-                <span className="sr-only">Choose profile photo</span>
-                <input
-                  type="file"
-                  className="block w-full text-sm text-slate-500
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-l-md file:border-0
-                file:text-sm file:font-semibold
-                file:bg-sky-500 file:text-white
-                hover:file:bg-sky-400
-                focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
-                focus:rounded-lg
-                "
-                />
-              </label>
-              <TextAreaInput
-                label="Deskripsi"
-                name="description"
-                error={errors.description?.message}
-                register={register}
-                placeholder="Masukkan deskripsi..."
-              />
-            </div>
+            <TextAreaInput
+              label="Deskripsi"
+              name="description"
+              error={errors.description?.message}
+              register={register}
+              placeholder="Masukkan deskripsi..."
+            />
           </div>
-          <div className="pt-4">
-            <SubmitButton text="Tambahkan Barang" />
-          </div>
-        </form>
-      </div>
-    </>
+        </div>
+        <SubmitButton text="Tambahkan Barang" />
+      </form>
+    </div>
   );
 }
 
