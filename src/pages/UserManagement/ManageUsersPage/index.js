@@ -1,37 +1,47 @@
 import { useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
 import usersAPI from 'api/usersAPI';
 import ConfirmationModal from 'components/Modal/ConfirmationModal';
+import LinkButton from 'components/Navigation/LinkButton';
 import Loader from 'components/Loader/Loader';
-import Pagination from 'components/Table/Pagination';
 import PageSize from 'components/Table/PageSize';
+import Pagination from 'components/Table/Pagination';
+import { Heading, SubHeading } from 'components/Text';
 import { SnackbarContext } from 'context/SnackbarContext';
+import { usePagination } from 'hooks';
 import UserTable from './UserTable';
 
 function ManageUserPage() {
-  const snackbarRef = useContext(SnackbarContext);
-
-  const [pageData, setPageData] = useState({
+  const defaultPageDataValue = {
     isLoading: false,
-    rowData: [],
-    totalPages: 0,
-    totalRows: 0,
-    hasNext: false,
-    hasPrev: false
-  });
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+    rowData: []
+  };
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [pageData, setPageData] = useState(defaultPageDataValue);
+  const { currentPage, setCurrentPage, pageSize, setPageSize, navigation, setNavigation } =
+    usePagination();
+  const snackbarRef = useContext(SnackbarContext);
 
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
+  const openModal = () => setModalIsOpen(true);
 
   const closeModal = () => {
     setModalIsOpen(false);
     setSelectedUser(null);
+  };
+
+  const fetchData = async () => {
+    const res = await usersAPI.getUsers({ page: currentPage, limit: pageSize });
+    setPageData({
+      isLoading: false,
+      rowData: res.data.data.edge,
+      size: res.data.data.cursor.size
+    });
+    setNavigation({
+      hasNext: res.data.data.cursor.hasNext,
+      hasPrev: res.data.data.cursor.hasPrev,
+      totalPages: res.data.data.cursor.totalPages,
+      totalRows: res.data.data.cursor.totalRows
+    });
   };
 
   const deleteUser = async () => {
@@ -41,79 +51,54 @@ function ManageUserPage() {
       fetchData();
       snackbarRef.current.success('Berhasil menghapus pengguna!');
     } else {
-      console.log('error');
+      snackbarRef.current.error('Terjadi kesalahan!');
     }
   };
 
-  const fetchData = async () => {
-    const res = await usersAPI.getUsers({ page: currentPage, limit: pageSize });
-    setPageData({
-      isLoading: false,
-      rowData: res.data.data.edge,
-      totalPages: res.data.data.cursor.totalPages,
-      totalRows: res.data.data.cursor.totalRows,
-      hasNext: res.data.data.cursor.hasNext,
-      hasPrev: res.data.data.cursor.hasPrev,
-      size: res.data.data.cursor.size
-    });
-  };
-
   useEffect(() => {
-    setPageData((prevState) => ({
-      ...prevState,
-      rowData: [],
-      isLoading: true
-    }));
-
+    setPageData({
+      isLoading: true,
+      rowData: []
+    });
     fetchData();
   }, [currentPage, pageSize]);
 
   return (
-    <>
-      <h1 className="text-5xl text-sky-500 font-medium">Akun dan Pengguna</h1>
+    <div className="flex flex-col space-y-8">
+      <Heading>Akun dan Pengguna</Heading>
+      <SubHeading>Daftar Pengguna</SubHeading>
+      <LinkButton to="/users/create">Tambahkan Pengguna +</LinkButton>
 
-      <div className="mt-12 flex flex-col space-y-8">
-        <h2 className="text-2xl">Daftar Pengguna</h2>
-        <div className="max-w-7xl">
-          <Link to="/users/create" className="w-min">
-            <button className="border-2 border-sky-500 text-sky-500 text-sm py-2 px-4 font-semibold rounded-md w-max">
-              Tambahkan Pengguna +
-            </button>
-          </Link>
-
-          {pageData.isLoading ? (
-            <Loader />
-          ) : (
-            <div className="mt-6">
-              <PageSize pageSize={pageSize} setPageSize={setPageSize} />
-              <UserTable
-                data={pageData.rowData}
-                isLoading={pageData.isLoading}
-                openModal={openModal}
-                setSelected={setSelectedUser}
-              />
-              <Pagination
-                currentPage={currentPage}
-                hasNext={pageData.hasNext}
-                hasPrev={pageData.hasPrev}
-                setCurrentPage={setCurrentPage}
-                totalPages={pageData.totalPages}
-              />
-            </div>
-          )}
-
+      {pageData.isLoading ? (
+        <Loader />
+      ) : (
+        <div className="flex flex-col space-y-4">
+          <PageSize pageSize={pageSize} setPageSize={setPageSize} />
+          <UserTable
+            data={pageData.rowData}
+            isLoading={pageData.isLoading}
+            openModal={openModal}
+            setSelected={setSelectedUser}
+          />
+          <Pagination
+            currentPage={currentPage}
+            hasNext={navigation.hasNext}
+            hasPrev={navigation.hasPrev}
+            setCurrentPage={setCurrentPage}
+            totalPages={navigation.totalPages}
+          />
           <ConfirmationModal
             isOpen={modalIsOpen}
             closeModal={closeModal}
-            title="Hapus Pengguna?"
-            description="Apakah anda yakin ingin menghapus pengguna ini? Penghapusan tidak dapat dibatalkan setelah dilakukan."
+            title="Hapus Barang?"
+            description="Apakah anda yakin ingin menghapus barang ini? Penghapusan tidak dapat dibatalkan setelah dilakukan."
             proceed="Hapus"
             cancel="Batalkan"
             handler={deleteUser}
           />
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }
 

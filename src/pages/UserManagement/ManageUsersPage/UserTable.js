@@ -1,25 +1,36 @@
 import PropTypes from 'prop-types';
-import { PencilAltIcon, TrashIcon } from '@heroicons/react/outline';
-import Table from 'components/Table/Table';
-import roles from 'config/roles';
 import { useNavigate } from 'react-router-dom';
+import Table from 'components/Table/Table';
+import { ActionCell } from 'components/Table/Cells';
+import roles from 'config/roles';
 
-function UserTable({ data, isLoading, openModal, setSelected }) {
+function UserTable({ data, openModal, setSelected }) {
+  const navigate = useNavigate();
+
+  const handleEdit = (id) => {
+    navigate(`/users/${id}/edit`);
+  };
+
+  const handleDelete = (id) => {
+    setSelected(id);
+    openModal();
+  };
+
   const columns = [
     { Header: 'Username', accessor: 'username' },
     { Header: 'Nama depan', accessor: 'firstName' },
     { Header: 'Nama belakang', accessor: 'lastName' },
     {
       Header: 'Role',
-      Cell: (props) => <FormattedRole {...props} />
+      Cell: ({ row }) => roles[row?.original?.role]
     },
     {
       Header: ' ',
-      Cell: (props) => <ActionColumn {...props} openModal={openModal} setSelected={setSelected} />
+      Cell: (props) => <ActionCell {...props} handleEdit={handleEdit} handleDelete={handleDelete} />
     }
   ];
 
-  return <Table columns={columns} data={data} isLoading={isLoading} />;
+  return <Table columns={columns} data={data} />;
 }
 
 UserTable.propTypes = {
@@ -28,45 +39,5 @@ UserTable.propTypes = {
   openModal: PropTypes.func,
   setSelected: PropTypes.func
 };
-
-const ActionColumn = ({ row, openModal, setSelected }) => {
-  const navigate = useNavigate();
-
-  return (
-    <div className="flex space-x-4 justify-center">
-      <div>
-        <button
-          className="text-gray-700"
-          title="Edit"
-          onClick={() => {
-            navigate(`/users/${row.original.id}/edit`);
-          }}
-        >
-          <PencilAltIcon className="w-4 h-4" />
-        </button>
-      </div>
-      <div>
-        <button
-          className="text-red-500"
-          onClick={() => {
-            setSelected(row.original.id);
-            openModal();
-          }}
-          title="Delete"
-        >
-          <TrashIcon className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
-  );
-};
-
-ActionColumn.propTypes = {
-  row: PropTypes.object,
-  openModal: PropTypes.func,
-  setSelected: PropTypes.func
-};
-
-const FormattedRole = ({ row }) => roles[row?.original?.role];
 
 export default UserTable;

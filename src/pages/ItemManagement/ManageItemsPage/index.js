@@ -1,38 +1,47 @@
 import { useState, useEffect, useContext } from 'react';
 import itemsAPI from 'api/itemsAPI';
 import ConfirmationModal from 'components/Modal/ConfirmationModal';
-import Loader from 'components/Loader/Loader';
-import Pagination from 'components/Table/Pagination';
-import PageSize from 'components/Table/PageSize';
-import { SnackbarContext } from 'context/SnackbarContext';
-import ItemTable from './ItemTable';
-import { Heading, SubHeading } from 'components/Text';
 import LinkButton from 'components/Navigation/LinkButton';
+import Loader from 'components/Loader/Loader';
+import PageSize from 'components/Table/PageSize';
+import Pagination from 'components/Table/Pagination';
+import { Heading, SubHeading } from 'components/Text';
+import { SnackbarContext } from 'context/SnackbarContext';
+import { usePagination } from 'hooks';
+import ItemTable from './ItemTable';
 
 function ManageItemPage() {
-  const snackbarRef = useContext(SnackbarContext);
-
-  const [pageData, setPageData] = useState({
+  const defaultPageDataValue = {
     isLoading: false,
-    rowData: [],
-    totalPages: 0,
-    totalRows: 0,
-    hasNext: false,
-    hasPrev: false
-  });
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+    rowData: []
+  };
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [pageData, setPageData] = useState(defaultPageDataValue);
+  const { currentPage, setCurrentPage, pageSize, setPageSize, navigation, setNavigation } =
+    usePagination();
+  const snackbarRef = useContext(SnackbarContext);
 
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
+  const openModal = () => setModalIsOpen(true);
 
   const closeModal = () => {
     setModalIsOpen(false);
     setSelectedItem(null);
+  };
+
+  const fetchData = async () => {
+    const res = await itemsAPI.getItems({ page: currentPage, limit: pageSize });
+    setPageData({
+      isLoading: false,
+      rowData: res.data.data.edge,
+      size: res.data.data.cursor.size
+    });
+    setNavigation({
+      hasNext: res.data.data.cursor.hasNext,
+      hasPrev: res.data.data.cursor.hasPrev,
+      totalPages: res.data.data.cursor.totalPages,
+      totalRows: res.data.data.cursor.totalRows
+    });
   };
 
   const deleteItem = async () => {
@@ -42,30 +51,15 @@ function ManageItemPage() {
       fetchData();
       snackbarRef.current.success('Berhasil menghapus barang!');
     } else {
-      console.log('error');
+      snackbarRef.current.error('Terjadi kesalahan!');
     }
   };
 
-  const fetchData = async () => {
-    const res = await itemsAPI.getItems({ page: currentPage, limit: pageSize });
-    setPageData({
-      isLoading: false,
-      rowData: res.data.data.edge,
-      totalPages: res.data.data.cursor.totalPages,
-      totalRows: res.data.data.cursor.totalRows,
-      hasNext: res.data.data.cursor.hasNext,
-      hasPrev: res.data.data.cursor.hasPrev,
-      size: res.data.data.cursor.size
-    });
-  };
-
   useEffect(() => {
-    setPageData((prevState) => ({
-      ...prevState,
-      rowData: [],
-      isLoading: true
-    }));
-
+    setPageData({
+      isLoading: true,
+      rowData: []
+    });
     fetchData();
   }, [currentPage, pageSize]);
 
@@ -73,12 +67,12 @@ function ManageItemPage() {
     <div className="flex flex-col space-y-8">
       <Heading>Manajemen Barang</Heading>
       <SubHeading>Daftar Barang</SubHeading>
-      <LinkButton>Tambahkan Barang +</LinkButton>
+      <LinkButton to="/items/create">Tambahkan Barang +</LinkButton>
 
       {pageData.isLoading ? (
         <Loader />
       ) : (
-        <div>
+        <div className="flex flex-col space-y-4">
           <PageSize pageSize={pageSize} setPageSize={setPageSize} />
           <ItemTable
             data={pageData.rowData}
@@ -88,10 +82,10 @@ function ManageItemPage() {
           />
           <Pagination
             currentPage={currentPage}
-            hasNext={pageData.hasNext}
-            hasPrev={pageData.hasPrev}
+            hasNext={navigation.hasNext}
+            hasPrev={navigation.hasPrev}
             setCurrentPage={setCurrentPage}
-            totalPages={pageData.totalPages}
+            totalPages={navigation.totalPages}
           />
           <ConfirmationModal
             isOpen={modalIsOpen}

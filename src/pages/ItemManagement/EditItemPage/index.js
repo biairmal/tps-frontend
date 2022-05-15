@@ -1,12 +1,13 @@
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ImageInput, NumberInput, SubmitButton, TextInput, TextAreaInput } from 'components/Forms';
-import { createItemSchema } from 'validations/itemSchema';
-import itemsAPI from 'api/itemsAPI';
-import { useContext, useEffect } from 'react';
-import { SnackbarContext } from 'context/SnackbarContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
+import itemsAPI from 'api/itemsAPI';
+import { ImageInput, NumberInput, SubmitButton, TextInput, TextAreaInput } from 'components/Forms';
+import Loader from 'components/Loader/Loader';
 import { Heading, SubHeading } from 'components/Text';
+import { SnackbarContext } from 'context/SnackbarContext';
+import { createItemSchema } from 'validations/itemSchema';
 
 function EditItemPage() {
   const {
@@ -26,34 +27,38 @@ function EditItemPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const snackbarRef = useContext(SnackbarContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = async (id) => {
     const res = await itemsAPI.getItemById(id);
     reset(res.data.data);
+    setIsLoading(false);
   };
 
   useEffect(() => {
+    setIsLoading(true);
     fetchData(id);
   }, []);
 
   const submitForm = async (data) => {
-    const updateData = new FormData();
-
-    if (Object.keys(dirtyFields).length < 1) {
-      return snackbarRef.current.error('Mohon update data terlebih dahulu!');
-    }
-
-    Object.keys(dirtyFields).map((field) => {
-      if (field === 'picture') {
-        const uploadedImage = data.picture ? data.picture[0] : undefined;
-        if (uploadedImage) updateData.append('picture', uploadedImage);
-      }
-      updateData.append(field, data[field]);
-    });
-    console.log(dirtyFields);
-
     try {
+      setIsLoading(true);
+      const updateData = new FormData();
+
+      if (Object.keys(dirtyFields).length < 1) {
+        return snackbarRef.current.error('Mohon update data terlebih dahulu!');
+      }
+
+      Object.keys(dirtyFields).map((field) => {
+        if (field === 'picture') {
+          const uploadedImage = data.picture.length > 0 ? data.picture[0] : undefined;
+          if (uploadedImage) updateData.append('picture', uploadedImage);
+        }
+        updateData.append(field, data[field]);
+      });
+
       const res = await itemsAPI.updateItem(id, updateData);
+      setIsLoading(false);
 
       if (res.status === 200) {
         navigate('/items', { replace: true });
@@ -73,7 +78,9 @@ function EditItemPage() {
   return (
     <div className="flex flex-col space-y-8">
       <Heading>Manajemen Barang</Heading>
-      <SubHeading>Tambahkan Barang</SubHeading>
+      <SubHeading>Edit Barang</SubHeading>
+
+      {isLoading && <Loader />}
 
       <form id="item_form" onSubmit={handleSubmit(submitForm)}>
         <div className="flex flex-col xl:flex-row w-full space-y-4 xl:space-y-0 xl:space-x-16 mb-8">
@@ -164,7 +171,7 @@ function EditItemPage() {
             />
           </div>
         </div>
-        <SubmitButton text="Tambahkan Barang" />
+        <SubmitButton text="Simpan" />
       </form>
     </div>
   );

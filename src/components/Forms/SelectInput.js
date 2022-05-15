@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 function SelectInput(props) {
-  const { id, name, label, onChange, options, register } = props;
+  const { id, name, label, onChange, options, register, selected } = props;
   return (
     <div>
       <div className="font-medium">{label}</div>
@@ -16,7 +16,7 @@ function SelectInput(props) {
       >
         {options.length > 0 &&
           options.map(({ option, value }, index) => (
-            <option key={index} value={value}>
+            <option key={index} value={value} selected={selected === value ? true : false}>
               {option}
             </option>
           ))}
@@ -38,7 +38,8 @@ SelectInput.propTypes = {
   name: PropTypes.string,
   onChange: PropTypes.func,
   options: PropTypes.array,
-  register: PropTypes.func
+  register: PropTypes.func,
+  selected: PropTypes.any
 };
 
 export default SelectInput;

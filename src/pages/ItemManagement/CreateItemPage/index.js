@@ -1,12 +1,13 @@
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ImageInput, NumberInput, SubmitButton, TextInput, TextAreaInput } from 'components/Forms';
-import { createItemSchema } from 'validations/itemSchema';
-import itemsAPI from 'api/itemsAPI';
-import { useContext } from 'react';
-import { SnackbarContext } from 'context/SnackbarContext';
 import { useNavigate } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
+import itemsAPI from 'api/itemsAPI';
+import { ImageInput, NumberInput, SubmitButton, TextInput, TextAreaInput } from 'components/Forms';
+import Loader from 'components/Loader/Loader';
 import { Heading, SubHeading } from 'components/Text';
+import { SnackbarContext } from 'context/SnackbarContext';
+import { createItemSchema } from 'validations/itemSchema';
 
 function CreateItemPage() {
   const {
@@ -23,15 +24,18 @@ function CreateItemPage() {
 
   const snackbarRef = useContext(SnackbarContext);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const submitForm = async (data) => {
     try {
+      setIsLoading(true);
       const uploadedImage = data.picture ? data.picture[0] : undefined;
       const itemForm = document.getElementById('item_form');
       const formData = new FormData(itemForm);
       formData.set('picture', uploadedImage);
 
       const res = await itemsAPI.createItem(formData);
+      setIsLoading(false);
       if (res.status === 201) {
         navigate('/items', { replace: true });
         setTimeout(() => {
@@ -47,6 +51,8 @@ function CreateItemPage() {
     <div className="flex flex-col space-y-8">
       <Heading>Manajemen Barang</Heading>
       <SubHeading>Tambahkan Barang</SubHeading>
+
+      {isLoading && <Loader />}
 
       <form id="item_form" onSubmit={handleSubmit(submitForm)}>
         <div className="flex flex-col xl:flex-row w-full space-y-4 xl:space-y-0 xl:space-x-16 mb-8">

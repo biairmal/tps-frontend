@@ -1,11 +1,14 @@
+//
+import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { TextInput, SelectInput } from 'components/Forms';
-import { updateUserSchema } from 'validations/userSchema';
-import usersAPI from 'api/usersAPI';
-import { useContext, useEffect } from 'react';
-import { SnackbarContext } from 'context/SnackbarContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
+import usersAPI from 'api/usersAPI';
+import { SelectInput, SubmitButton, TextInput } from 'components/Forms';
+import Loader from 'components/Loader/Loader';
+import { Heading, SubHeading } from 'components/Text';
+import { SnackbarContext } from 'context/SnackbarContext';
+import { updateUserSchema } from 'validations/userSchema';
 
 function CreateUserPage() {
   const roleOptions = [
@@ -28,27 +31,34 @@ function CreateUserPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const snackbarRef = useContext(SnackbarContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
 
   const fetchData = async (id) => {
     const res = await usersAPI.getUserById(id);
     reset(res.data.data);
+    setIsLoading(false);
+    setSelectedRole(res.data.data.role);
   };
 
   useEffect(() => {
+    setIsLoading(true);
     fetchData(id);
   }, []);
 
   const submitForm = async (data) => {
-    const updateData = {};
-
-    if (Object.keys(dirtyFields).length < 1) {
-      return snackbarRef.current.error('Mohon update data terlebih dahulu!');
-    }
-
-    Object.keys(dirtyFields).map((field) => (updateData[field] = data[field]));
-
     try {
+      setIsLoading(true);
+      const updateData = {};
+
+      if (Object.keys(dirtyFields).length < 1) {
+        return snackbarRef.current.error('Mohon update data terlebih dahulu!');
+      }
+
+      Object.keys(dirtyFields).map((field) => (updateData[field] = data[field]));
+
       const res = await usersAPI.updateUser(id, updateData);
+      setIsLoading(false);
 
       if (res.status === 200) {
         navigate('/users', { replace: true });
@@ -66,73 +76,66 @@ function CreateUserPage() {
   };
 
   return (
-    <>
-      <h1 className="text-5xl text-sky-500 font-medium">Akun dan Pengguna</h1>
+    <div className="flex flex-col space-y-8">
+      <Heading>Akun dan Pengguna</Heading>
+      <SubHeading>Edit Pengguna</SubHeading>
 
-      <div className="mt-12 flex flex-col space-y-8">
-        <h2 className="text-2xl">Edit Pengguna</h2>
+      {isLoading && <Loader />}
 
-        <div className="max-w-md flex flex-col">
-          <form className="space-y-4" onSubmit={handleSubmit(submitForm)}>
-            <TextInput
-              label="Username"
-              name="username"
-              error={errors.username?.message}
-              register={register}
-              placeholder="Masukkan username"
-              disabled={true}
-            />
-            <TextInput
-              label="Password"
-              name="password"
-              error={errors.password?.message}
-              register={register}
-              placeholder="Masukkan password"
-              type="password"
-            />
-            <TextInput
-              label="Konfirmasi Password"
-              name="confirmPassword"
-              error={errors.confirmPassword?.message}
-              register={register}
-              placeholder="Masukkan ulang password"
-              type="password"
-            />
-            <TextInput
-              label="Nama Depan"
-              name="firstName"
-              error={errors.firstName?.message}
-              register={register}
-              placeholder="Masukkan nama depan"
-            />
-            <TextInput
-              label="Nama Belakang"
-              name="lastName"
-              error={errors.lastName?.message}
-              register={register}
-              placeholder="Masukkan nama belakang"
-            />
-            <SelectInput
-              label="Role"
-              name="role"
-              error={errors.role?.message}
-              register={register}
-              placeholder="Tentukan Role"
-              defaultValue={1}
-              options={roleOptions}
-            />
-            <div className="pt-4">
-              <button
-                type="submit"
-                className="bg-sky-500 text-white py-2 px-4 rounded-md w-max disabled:bg-opacity-50"
-              >
-                Tambahkan Pengguna
-              </button>
-            </div>
-          </form>
+      <form onSubmit={handleSubmit(submitForm)}>
+        <div className="max-w-lg space-y-4">
+          <TextInput
+            label="Username"
+            name="username"
+            error={errors.username?.message}
+            register={register}
+            placeholder="Masukkan username"
+            disabled={true}
+          />
+          <TextInput
+            label="Password"
+            name="password"
+            error={errors.password?.message}
+            register={register}
+            placeholder="Masukkan password"
+            type="password"
+          />
+          <TextInput
+            label="Konfirmasi Password"
+            name="confirmPassword"
+            error={errors.confirmPassword?.message}
+            register={register}
+            placeholder="Masukkan ulang password"
+            type="password"
+          />
+          <TextInput
+            label="Nama Depan"
+            name="firstName"
+            error={errors.firstName?.message}
+            register={register}
+            placeholder="Masukkan nama depan"
+          />
+          <TextInput
+            label="Nama Belakang"
+            name="lastName"
+            error={errors.lastName?.message}
+            register={register}
+            placeholder="Masukkan nama belakang"
+          />
+          <SelectInput
+            label="Role"
+            name="role"
+            error={errors.role?.message}
+            register={register}
+            placeholder="Tentukan Role"
+            defaultValue={1}
+            options={roleOptions}
+            selected={selectedRole}
+          />
+          <SubmitButton text="Simpan" />
         </div>
-      </div>
-    </>
+      </form>
+    </div>
   );
 }
 

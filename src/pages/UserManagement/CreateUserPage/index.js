@@ -1,11 +1,13 @@
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { PasswordInput, SelectInput, SubmitButton, TextInput } from 'components/Forms';
-import { createUserSchema } from 'validations/userSchema';
-import usersAPI from 'api/usersAPI';
-import { useContext } from 'react';
-import { SnackbarContext } from 'context/SnackbarContext';
 import { useNavigate } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
+import usersAPI from 'api/usersAPI';
+import { PasswordInput, SelectInput, SubmitButton, TextInput } from 'components/Forms';
+import Loader from 'components/Loader/Loader';
+import { Heading, SubHeading } from 'components/Text';
+import { SnackbarContext } from 'context/SnackbarContext';
+import { createUserSchema } from 'validations/userSchema';
 
 function CreateUserPage() {
   const roleOptions = [
@@ -25,10 +27,13 @@ function CreateUserPage() {
 
   const snackbarRef = useContext(SnackbarContext);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const submitForm = async (data) => {
     try {
+      setIsLoading(true);
       const res = await usersAPI.createUser(data);
+      setIsLoading(false);
       if (res.status === 201) {
         navigate('/users', { replace: true });
         setTimeout(() => {
@@ -41,65 +46,62 @@ function CreateUserPage() {
   };
 
   return (
-    <>
-      <h1 className="text-5xl text-sky-500 font-medium">Akun dan Pengguna</h1>
+    <div className="flex flex-col space-y-8">
+      <Heading>Akun dan Pengguna</Heading>
+      <SubHeading>Tambahkan Pengguna</SubHeading>
 
-      <div className="mt-12 flex flex-col space-y-8">
-        <h2 className="text-2xl">Tambahkan Pengguna</h2>
+      {isLoading && <Loader />}
 
-        <div className="max-w-md flex flex-col">
-          <form className="space-y-4" onSubmit={handleSubmit(submitForm)}>
-            <TextInput
-              label="Username*"
-              name="username"
-              error={errors.username?.message}
-              register={register}
-              placeholder="Masukkan username..."
-            />
-            <PasswordInput
-              label="Password*"
-              name="password"
-              error={errors.password?.message}
-              register={register}
-              placeholder="Masukkan password..."
-            />
-            <PasswordInput
-              label="Konfirmasi Password*"
-              name="confirmPassword"
-              error={errors.confirmPassword?.message}
-              register={register}
-              placeholder="Masukkan ulang password..."
-            />
-            <TextInput
-              label="Nama Depan*"
-              name="firstName"
-              error={errors.firstName?.message}
-              register={register}
-              placeholder="Masukkan nama depan..."
-            />
-            <TextInput
-              label="Nama Belakang"
-              name="lastName"
-              error={errors.lastName?.message}
-              register={register}
-              placeholder="Masukkan nama belakang..."
-            />
-            <SelectInput
-              label="Role*"
-              name="role"
-              error={errors.role?.message}
-              register={register}
-              placeholder="Tentukan Role..."
-              defaultValue={1}
-              options={roleOptions}
-            />
-            <div className="pt-4">
-              <SubmitButton text="Tambahkan Pengguna" />
-            </div>
-          </form>
+      <form onSubmit={handleSubmit(submitForm)}>
+        <div className="max-w-lg space-y-4">
+          <TextInput
+            label="Username*"
+            name="username"
+            error={errors.username?.message}
+            register={register}
+            placeholder="Masukkan username..."
+          />
+          <PasswordInput
+            label="Password*"
+            name="password"
+            error={errors.password?.message}
+            register={register}
+            placeholder="Masukkan password..."
+          />
+          <PasswordInput
+            label="Konfirmasi Password*"
+            name="confirmPassword"
+            error={errors.confirmPassword?.message}
+            register={register}
+            placeholder="Masukkan ulang password..."
+          />
+          <TextInput
+            label="Nama Depan*"
+            name="firstName"
+            error={errors.firstName?.message}
+            register={register}
+            placeholder="Masukkan nama depan..."
+          />
+          <TextInput
+            label="Nama Belakang"
+            name="lastName"
+            error={errors.lastName?.message}
+            register={register}
+            placeholder="Masukkan nama belakang..."
+          />
+          <SelectInput
+            label="Role*"
+            name="role"
+            error={errors.role?.message}
+            register={register}
+            placeholder="Tentukan Role..."
+            defaultValue={1}
+            options={roleOptions}
+          />
+          <SubmitButton text="Tambahkan Pengguna" />
         </div>
-      </div>
-    </>
+      </form>
+    </div>
   );
 }
 
