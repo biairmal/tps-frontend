@@ -74,12 +74,7 @@ function ManageUserPage() {
       ) : (
         <div className="flex flex-col space-y-4">
           <PageSize pageSize={pageSize} setPageSize={setPageSize} />
-          <UserTable
-            data={pageData.rowData}
-            isLoading={pageData.isLoading}
-            openModal={openModal}
-            setSelected={setSelectedUser}
-          />
+          <UserTable data={pageData.rowData} openModal={openModal} setSelected={setSelectedUser} />
           <Pagination
             currentPage={currentPage}
             hasNext={navigation.hasNext}

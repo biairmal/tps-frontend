@@ -35,7 +35,6 @@ function UserTable({ data, openModal, setSelected }) {
 
 UserTable.propTypes = {
   data: PropTypes.array,
-  isLoading: PropTypes.bool,
   openModal: PropTypes.func,
   setSelected: PropTypes.func
 };

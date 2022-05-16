@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 function TextInput(props) {
   const { type, id, placeholder, name, label, onChange, register, error, disabled } = props;
   return (
-    <div>
+    <div className="flex flex-1 flex-col">
       <div className="font-medium">{label}</div>
       <input
         className={`mt-2 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400

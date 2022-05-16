@@ -5,7 +5,7 @@ const itemsAPI = {
     return Api.post('/items', data);
   },
   getItems(options) {
-    return Api.get(`/items?limit=${options.limit}&page=${options.page}`);
+    return Api.get(`/items?limit=${options.limit}&page=${options.page}&search=${options.search}`);
   },
   getItemById(id) {
     return Api.get(`/items/${id}`);
