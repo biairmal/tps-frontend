@@ -1,11 +1,14 @@
+import queryBuilder from 'helpers/queryBuilder';
 import Api from './api';
 
 const itemsAPI = {
   createItem(data) {
     return Api.post('/items', data);
   },
-  getItems(options) {
-    return Api.get(`/items?limit=${options.limit}&page=${options.page}&search=${options.search}`);
+  getItems(query) {
+    const queryString = queryBuilder(query);
+    console.log(queryString)
+    return Api.get(`/items?${queryString}`);
   },
   getItemById(id) {
     return Api.get(`/items/${id}`);
