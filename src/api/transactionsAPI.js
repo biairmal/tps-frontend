@@ -1,13 +1,13 @@
 import Api from './api';
 
 const transactionsAPI = {
-  createUser(data) {
+  createTransaction(data) {
     return Api.post('/transactions', data);
   },
-  getUsers(options) {
+  getTransactions(options) {
     return Api.get(`/transactions?limit=${options.limit}&page=${options.page}`);
   },
-  getUserById(id) {
+  getTransactionById(id) {
     return Api.get(`/transactions/${id}`);
   }
 };

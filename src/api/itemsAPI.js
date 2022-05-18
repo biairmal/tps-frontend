@@ -7,7 +7,6 @@ const itemsAPI = {
   },
   getItems(query) {
     const queryString = queryBuilder(query);
-    console.log(queryString)
     return Api.get(`/items?${queryString}`);
   },
   getItemById(id) {

@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
 
-function SubmitButton({ text }) {
+function SubmitButton({ id, hidden, text }) {
   return (
     <button
+      id={id}
       type="submit"
-      className="bg-sky-500 hover:bg-sky-400 text-white py-2 px-4 rounded-md w-max"
+      className={`bg-sky-500 hover:bg-sky-400 text-white py-2 px-4 rounded-md w-max ${
+        hidden ? 'hidden' : ''
+      }`}
     >
       {text}
     </button>
@@ -12,6 +15,8 @@ function SubmitButton({ text }) {
 }
 
 SubmitButton.propTypes = {
+  id: PropTypes.string,
+  hidden: PropTypes.bool,
   text: PropTypes.string
 };
 

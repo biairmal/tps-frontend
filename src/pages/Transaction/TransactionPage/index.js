@@ -17,7 +17,7 @@ function TransactionPage() {
     usePagination();
 
   const fetchData = async () => {
-    const res = await transactionsAPI.getUsers({ page: currentPage, limit: pageSize });
+    const res = await transactionsAPI.getTransactions({ page: currentPage, limit: pageSize });
     setPageData({
       isLoading: false,
       rowData: res.data.data.edge,

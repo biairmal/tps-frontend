@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
 
-function PriceCell({ row, columnName }) {
-  const priceArr = row.original[columnName].toString();
+function PriceCell({ row, columnName, type }) {
+  const priceArr =
+    type === 'function'
+      ? row.original[columnName]().toString()
+      : row.original[columnName].toString();
   const split = priceArr.split(',');
   let sisa = split[0].length % 3;
   let rupiah = split[0].substr(0, sisa);
@@ -20,7 +23,8 @@ function PriceCell({ row, columnName }) {
 PriceCell.propTypes = {
   columnName: PropTypes.string,
   prefix: PropTypes.string,
-  row: PropTypes.object
+  row: PropTypes.object,
+  type: PropTypes.string
 };
 
 export default PriceCell;
