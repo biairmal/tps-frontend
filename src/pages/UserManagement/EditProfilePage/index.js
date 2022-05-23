@@ -1,7 +1,7 @@
 //
 import { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import usersAPI from 'api/usersAPI';
 import { SelectInput, SubmitButton, TextInput } from 'components/Forms';
@@ -10,7 +10,7 @@ import { Heading, SubHeading } from 'components/Text';
 import { SnackbarContext } from 'context/SnackbarContext';
 import { updateUserSchema } from 'validations/userSchema';
 
-function EditUserPage() {
+function EditProfilePage() {
   const roleOptions = [
     { option: 'Admin', value: 'admin' },
     { option: 'Dealer', value: 'dealer' },
@@ -28,14 +28,13 @@ function EditUserPage() {
     mode: 'onTouched'
   });
 
-  const { id } = useParams();
   const navigate = useNavigate();
   const snackbarRef = useContext(SnackbarContext);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
 
-  const fetchData = async (id) => {
-    const res = await usersAPI.getUserById(id);
+  const fetchData = async () => {
+    const res = await usersAPI.getProfile();
     reset(res.data.data);
     setIsLoading(false);
     setSelectedRole(res.data.data.role);
@@ -43,7 +42,7 @@ function EditUserPage() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetchData(id);
+    fetchData();
   }, []);
 
   const submitForm = async (data) => {
@@ -57,7 +56,7 @@ function EditUserPage() {
 
       Object.keys(dirtyFields).map((field) => (updateData[field] = data[field]));
 
-      const res = await usersAPI.updateUser(id, updateData);
+      const res = await usersAPI.updateProfile(updateData);
       setIsLoading(false);
 
       if (res.status === 200) {
@@ -77,8 +76,8 @@ function EditUserPage() {
 
   return (
     <div className="flex flex-col space-y-8">
-      <Heading>Akun dan Pengguna</Heading>
-      <SubHeading>Edit Pengguna</SubHeading>
+      <Heading>Data Diri</Heading>
+      <SubHeading>Edit Data Diri</SubHeading>
 
       {isLoading && <Loader />}
 
@@ -131,6 +130,7 @@ function EditUserPage() {
             defaultValue={1}
             options={roleOptions}
             selected={selectedRole}
+            disabled={true}
           />
           <SubmitButton text="Simpan" />
         </div>
@@ -139,4 +139,4 @@ function EditUserPage() {
   );
 }
 
-export default EditUserPage;
+export default EditProfilePage;

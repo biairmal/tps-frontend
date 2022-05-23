@@ -15,6 +15,12 @@ const usersAPI = {
   },
   deleteUserById(id) {
     return Api.delete(`/users/${id}`);
+  },
+  getProfile() {
+    return Api.get('/profile');
+  },
+  updateProfile(data) {
+    return Api.put('/profile/edit', data);
   }
 };
 

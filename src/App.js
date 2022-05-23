@@ -4,10 +4,12 @@ import { UserContext } from 'context/UserContext';
 import ProtectedOutlet from 'components/Navigation/ProtectedOutlet';
 import {
   InformasiPenjualan,
+  LaporanPenjualan,
   LoginPage,
   PageBase,
   CreateUserPage,
   EditUserPage,
+  EditProfilePage,
   ManageUsersPage,
   CreateItemPage,
   EditItemPage,
@@ -47,8 +49,9 @@ function App() {
             >
               <Route path="/" element={<InformasiPenjualan />} />
               <Route path="/dashboard" element={<InformasiPenjualan />} />
+              <Route path="/report" element={<LaporanPenjualan />} />
               {/* Transaction */}
-              <Route path="/transactions" element={<CreateTransactionPage />} />
+              <Route path="/transactions/create" element={<CreateTransactionPage />} />
               <Route path="/transactions/history" element={<TransactionPage />} />
               {/* Item Management */}
               <Route path="/items" element={<ManageItemsPage />} />
@@ -58,7 +61,7 @@ function App() {
               <Route path="/users" element={<ManageUsersPage />} />
               <Route path="/users/create" element={<CreateUserPage />} />
               <Route path="/users/:id/edit" element={<EditUserPage />} />
-              <Route path="/invoices" element={<InformasiPenjualan />} />
+              <Route path="/profile/edit" element={<EditProfilePage />} />
               <Route path="/report" element={<InformasiPenjualan />} />
             </Route>
           </Routes>

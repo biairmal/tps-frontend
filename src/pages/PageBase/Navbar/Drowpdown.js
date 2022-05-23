@@ -11,6 +11,7 @@ function Dropdown() {
   let navigate = useNavigate();
 
   const { user, setUser } = useContext(UserContext);
+
   const logout = async () => {
     try {
       const res = await authAPI.logout();
@@ -54,6 +55,7 @@ function Dropdown() {
               <Menu.Item>
                 {({ active }) => (
                   <button
+                    onClick={() => navigate('/profile/edit')}
                     className={`${
                       active ? 'bg-sky-500 text-white' : 'text-gray-900'
                     } group flex rounded-md items-center w-full p-2 text-sm space-x-2`}

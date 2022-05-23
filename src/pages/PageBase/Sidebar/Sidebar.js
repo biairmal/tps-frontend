@@ -21,13 +21,11 @@ function Sidebar({ isHidden }) {
         <div className="px-4 pt-4 pb-2 text-sm text-gray-500 font-extrabold">Menu</div>
         <div>
           <CustomLink to="/dashboard">Dashboard</CustomLink>
-          <CustomLink to="/transactions">Panel Transaksi</CustomLink>
-          <CustomLink to="/items">Manajemen Stok</CustomLink>
           <Disclosure defaultOpen={true}>
             {({ open }) => (
               <div className="w-full text-left font-bold">
                 <Disclosure.Button className="px-4 py-3 rounded-r-xl text-gray-500 font-bold flex flex-row justify-between w-full items-center hover:bg-gray-50">
-                  <div>Laporan</div>
+                  <div>Panel Transaksi</div>
                   {/*
               Use the `open` render prop to rotate the icon when the panel is open
             */}
@@ -35,13 +33,14 @@ function Sidebar({ isHidden }) {
                 </Disclosure.Button>
 
                 <Disclosure.Panel>
-                  <SubCustomLink to="/invoices">Daftar Invoice</SubCustomLink>
-                  <SubCustomLink to="/report">Laporan Penjualan</SubCustomLink>
+                  <SubCustomLink to="/transactions/create">Buat Transaksi</SubCustomLink>
                   <SubCustomLink to="/transactions/history">Riwayat Transaksi</SubCustomLink>
                 </Disclosure.Panel>
               </div>
             )}
           </Disclosure>
+          <CustomLink to="/report">Laporan Penjualan</CustomLink>
+          <CustomLink to="/items">Manajemen Stok</CustomLink>
           <CustomLink to="/users">Akun dan Pengguna</CustomLink>
         </div>
       </div>
