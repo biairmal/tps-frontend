@@ -15,7 +15,8 @@ import {
   EditItemPage,
   ManageItemsPage,
   CreateTransactionPage,
-  TransactionPage
+  TransactionPage,
+  InvoicePage
 } from './pages';
 import { useLocalStorage } from 'hooks/useLocalStorage';
 import Snackbar from 'components/Notification/Snackbar';
@@ -53,6 +54,7 @@ function App() {
               {/* Transaction */}
               <Route path="/transactions/create" element={<CreateTransactionPage />} />
               <Route path="/transactions/history" element={<TransactionPage />} />
+              <Route path="/invoices/:filename" element={<InvoicePage />} />
               {/* Item Management */}
               <Route path="/items" element={<ManageItemsPage />} />
               <Route path="/items/create" element={<CreateItemPage />} />

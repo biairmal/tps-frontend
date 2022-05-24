@@ -6,7 +6,6 @@ function DeleteCell({ row, handleDelete }) {
     <button
       className="text-red-500"
       onClick={() => {
-        console.log(row.id)
         handleDelete(row.id);
       }}
       title="Delete"

@@ -21,13 +21,14 @@ function CreateTransactionPage() {
     formState: { errors: buyerErrors }
   } = useForm({
     resolver: yupResolver(createBuyerSchema),
-    mode: 'onTouched'
+    mode: 'onSubmit'
   });
 
   const {
     register: registerItem,
     handleSubmit: handleItemSubmit,
     setValue,
+    reset: resetItem,
     formState: { errors: itemErrors }
   } = useForm({
     resolver: yupResolver(addItemToCartSchema),
@@ -39,60 +40,57 @@ function CreateTransactionPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [cartData, setCartData] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
 
-  const addItemToCart = () => {
-    if (selectedItem) {
-      setCartData((prev) => [...prev, selectedItem]);
+  const cartAddItem = (item) => {
+    resetItem();
+    const findIndex = cartData.findIndex((cartItem) => cartItem.item.id === item.item.id);
+    if (findIndex < 0) {
+      setCartData((prev) => [...prev, item]);
+    } else {
+      let cartDataCopy = [...cartData];
+      let itemToUpdate = cartDataCopy[findIndex];
+      itemToUpdate.quantity += item.quantity;
+      cartDataCopy[findIndex] = itemToUpdate;
+      setCartData(cartDataCopy);
     }
-    setSelectedItem(null);
   };
 
-  const deleteItemFromCart = () => {
-    if (cartData.length === 1) setCartData([]);
-    else {
-      console.log('tes');
-    }
+  const cartDeleteItem = (index) => {
+    let cartDataCopy = [...cartData];
+    cartDataCopy.splice(index, 1);
+    setCartData(cartDataCopy);
   };
-
-  // state: create or find buyer, create transaction loading
-  // selected item, selected buyer, cart, foundBuyer, foundItem
-
-  // function : select buyer, select item, drop item from cart
-  // fetch buyer, fetch item
-
-  const fetchBuyer = () => {};
-
-  const fetchItem = () => {};
-
-  const cartAddItem = (data) => {
-    setCartData((prev) => [...prev, data]);
-  };
-
-  const cartDeleteItem = () => {};
 
   const createTransaction = async (data) => {
     try {
-      // setIsLoading(true);
+      if (cartData.length < 1)
+        return snackbarRef.current.error('Mohon input barang terlebih dahulu');
+      setIsLoading(true);
       const buyer = data;
       const reqData = {
         buyer,
-        items: cartData.map((row) => ({id: row.item.id, quantity: row.quantity}))
+        items: cartData.map((row) => ({ id: row.item.id, quantity: row.quantity }))
       };
 
-      console.log(reqData);
+      const res = await transactionsAPI.createTransaction(reqData);
+      setIsLoading(false);
+      console.log(res);
 
-      // const res = await transactionsAPI.createTransaction(reqData);
-
-      // if (res.status === 201) {
-      //   navigate('/users', { replace: true });
-      //   setTimeout(() => {
-      //     snackbarRef.current.success('Berhasil membuat pengguna!');
-      //   }, 1000);
-      // }
+      if (res.status === 201) {
+        navigate('/dashboard', { replace: true });
+        setTimeout(() => {
+          snackbarRef.current.success('Transaksi berhasil dilakukan!');
+        }, 1000);
+      }
     } catch (error) {
       console.log(error?.response);
     }
+  };
+
+  const searchItems = async (searchValue) => {
+    const res = await itemsAPI.getItems({ limit: 10, page: 1, search: searchValue });
+    if (res.status === 200) return res.data.data.edge;
+    return [];
   };
 
   return (
@@ -115,8 +113,7 @@ function CreateTransactionPage() {
           name="item"
           errors={itemErrors}
           register={setValue}
-          selectedItem={selectedItem}
-          setSelectedItem={setSelectedItem}
+          searchCallback={searchItems}
         />
         <div className="flex flex-row w-full items-end space-x-2">
           <NumberInput
@@ -138,7 +135,7 @@ function CreateTransactionPage() {
           document.getElementById('submit_transaction').click();
         }}
       />
-      <CartTable data={cartData} deleteFunction={deleteItemFromCart} />
+      <CartTable data={cartData} deleteFunction={cartDeleteItem} />
     </div>
   );
 }
