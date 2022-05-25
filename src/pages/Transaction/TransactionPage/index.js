@@ -48,7 +48,11 @@ function TransactionPage() {
         <Loader />
       ) : (
         <div className="flex flex-col space-y-4">
-          <PageSize pageSize={pageSize} setPageSize={setPageSize} />
+          <PageSize
+            pageSize={pageSize}
+            setPageSize={setPageSize}
+            show={pageData.rowData.length > 0}
+          />
           <TransactionTable data={pageData.rowData} />
           <Pagination
             currentPage={currentPage}
@@ -56,6 +60,7 @@ function TransactionPage() {
             hasPrev={navigation.hasPrev}
             setCurrentPage={setCurrentPage}
             totalPages={navigation.totalPages}
+            show={pageData.rowData.length > 0}
           />
         </div>
       )}

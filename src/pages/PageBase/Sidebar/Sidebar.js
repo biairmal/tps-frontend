@@ -4,7 +4,7 @@ import { ChevronDownIcon } from '@heroicons/react/solid';
 import CustomLink from './CustomLink';
 import SubCustomLink from './SubCustomLink';
 
-function Sidebar({ isHidden }) {
+function Sidebar({ isHidden, user }) {
   return (
     <Transition
       show={!isHidden}
@@ -34,14 +34,20 @@ function Sidebar({ isHidden }) {
 
                 <Disclosure.Panel>
                   <SubCustomLink to="/transactions/create">Buat Transaksi</SubCustomLink>
-                  <SubCustomLink to="/transactions/history">Riwayat Transaksi</SubCustomLink>
+                  {['admin', 'distributor'].includes(user?.role) && (
+                    <SubCustomLink to="/transactions/history">Riwayat Transaksi</SubCustomLink>
+                  )}
                 </Disclosure.Panel>
               </div>
             )}
           </Disclosure>
-          <CustomLink to="/report">Laporan Penjualan</CustomLink>
-          <CustomLink to="/items">Manajemen Stok</CustomLink>
-          <CustomLink to="/users">Akun dan Pengguna</CustomLink>
+          {['admin', 'distributor'].includes(user?.role) && (
+            <>
+              <CustomLink to="/report">Laporan Penjualan</CustomLink>
+              <CustomLink to="/items">Manajemen Stok</CustomLink>
+            </>
+          )}
+          {user?.role === 'distributor' && <CustomLink to="/users">Akun dan Pengguna</CustomLink>}
         </div>
       </div>
     </Transition>
@@ -49,7 +55,8 @@ function Sidebar({ isHidden }) {
 }
 
 Sidebar.propTypes = {
-  isHidden: PropTypes.bool
+  isHidden: PropTypes.bool,
+  user: PropTypes.object
 };
 
 export default Sidebar;

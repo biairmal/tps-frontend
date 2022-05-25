@@ -73,7 +73,11 @@ function ManageItemPage() {
         <Loader />
       ) : (
         <div className="flex flex-col space-y-4">
-          <PageSize pageSize={pageSize} setPageSize={setPageSize} />
+          <PageSize
+            pageSize={pageSize}
+            setPageSize={setPageSize}
+            show={pageData.rowData.length > 0}
+          />
           <ItemTable
             data={pageData.rowData}
             isLoading={pageData.isLoading}
@@ -86,6 +90,7 @@ function ManageItemPage() {
             hasPrev={navigation.hasPrev}
             setCurrentPage={setCurrentPage}
             totalPages={navigation.totalPages}
+            show={pageData.rowData.length > 0}
           />
           <ConfirmationModal
             isOpen={modalIsOpen}

@@ -5,3 +5,4 @@ export { CreateUserPage, EditUserPage, EditProfilePage, ManageUsersPage } from '
 export { CreateItemPage, EditItemPage, ManageItemsPage } from './ItemManagement';
 export { CreateTransactionPage, TransactionPage } from './Transaction';
 export { default as LaporanPenjualan } from './LaporanPenjualanPage';
+export { default as InvoicePage } from './InvoicePage';

@@ -74,10 +74,10 @@ function CreateTransactionPage() {
 
       const res = await transactionsAPI.createTransaction(reqData);
       setIsLoading(false);
-      console.log(res);
 
       if (res.status === 201) {
-        navigate('/dashboard', { replace: true });
+        const filename = res.data.data.invoice;
+        navigate(`/invoices/${filename}`, { replace: true });
         setTimeout(() => {
           snackbarRef.current.success('Transaksi berhasil dilakukan!');
         }, 1000);

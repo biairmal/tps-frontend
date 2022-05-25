@@ -8,7 +8,7 @@ function ReportTable({ data, groupBy }) {
     month: 'Bulan',
     year: 'Tahun'
   };
-  
+
   const columns = [
     {
       Header: dateHeaders[groupBy],

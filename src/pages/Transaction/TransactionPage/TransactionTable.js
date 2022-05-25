@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import Table from 'components/Table/Table';
+import InvoiceButton from './InvoiceButton';
 
 function TransactionTable({ data }) {
   const columns = [
@@ -8,7 +9,10 @@ function TransactionTable({ data }) {
     { Header: 'Subtotal', accessor: 'subtotalPrice' },
     { Header: 'Total', accessor: 'totalPrice' },
     { Header: 'Notes', accessor: 'notes' },
-    { Header: 'Invoices', accessor: 'invoice' }
+    {
+      Header: 'Invoices',
+      Cell: (props) => <InvoiceButton {...props} />
+    }
   ];
 
   return <Table columns={columns} data={data} />;

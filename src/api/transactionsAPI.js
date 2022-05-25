@@ -9,6 +9,9 @@ const transactionsAPI = {
   },
   getTransactionById(id) {
     return Api.get(`/transactions/${id}`);
+  },
+  downloadInvoice(filename) {
+    return Api.get(`/files/${filename}`, { responseType: 'blob' });
   }
 };
 

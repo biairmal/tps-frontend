@@ -35,7 +35,7 @@ function ItemCombobox({ name, error, register, searchCallback }) {
   });
 
   const displayValue = useCallback((item) => {
-    if(!item) return ''
+    if (!item) return '';
     return `${item?.code} - ${item?.name}`;
   });
 

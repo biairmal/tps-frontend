@@ -74,7 +74,11 @@ function LaporanPenjualan() {
             ))}
           </div>
           <div className="flex flex-col space-y-4">
-            <PageSize pageSize={pageSize} setPageSize={setPageSize} />
+            <PageSize
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              show={pageData.rowData.length > 0}
+            />
             <ReportTable data={pageData.rowData} groupBy={groupBy} />
             <Pagination
               currentPage={currentPage}
@@ -82,6 +86,7 @@ function LaporanPenjualan() {
               hasPrev={navigation.hasPrev}
               setCurrentPage={setCurrentPage}
               totalPages={navigation.totalPages}
+              show={pageData.rowData.length > 0}
             />
           </div>
         </>

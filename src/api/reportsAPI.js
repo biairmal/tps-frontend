@@ -7,7 +7,7 @@ const reportsAPI = {
     return Api.get(`/dailyReports?${queryString}`);
   },
   getThisMonthSummary() {
-    return Api.get('dailyReports/summary')
+    return Api.get('dailyReports/summary');
   }
 };
 
