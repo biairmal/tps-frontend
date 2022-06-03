@@ -8,7 +8,6 @@ function TransactionTable({ data }) {
     { Header: 'Total Qty', accessor: 'totalQuantity' },
     { Header: 'Subtotal', accessor: 'subtotalPrice' },
     { Header: 'Total', accessor: 'totalPrice' },
-    { Header: 'Notes', accessor: 'notes' },
     {
       Header: 'Invoices',
       Cell: (props) => <InvoiceButton {...props} />

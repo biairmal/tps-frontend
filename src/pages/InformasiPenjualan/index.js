@@ -31,6 +31,7 @@ function InformasiPenjualan() {
 
   const fetchData = async () => {
     const res = await reportsAPI.getThisMonthSummary();
+    console.log(res.data.data[0])
     setPageData({
       isLoading: false,
       data: res.data.data[0]
@@ -71,7 +72,7 @@ function InformasiPenjualan() {
     else if (price / 1000000000 > 1) return `${price / 1000000000} M`;
     else if (price / 1000000 > 1) return `${price / 1000000} Jt`;
     else if (price / 1000 > 1) return `${price / 1000} Rb`;
-    else return `${formatPrice}`;
+    else return `${price}`;
   };
 
   return (
