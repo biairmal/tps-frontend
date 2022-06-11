@@ -30,33 +30,39 @@ function InformasiPenjualan() {
   });
 
   const fetchData = async () => {
-    const res = await reportsAPI.getThisMonthSummary();
-    console.log(res.data.data[0])
-    setPageData({
-      isLoading: false,
-      data: res.data.data[0]
-    });
-    const res2 = await reportsAPI.getReports({ limit: 12, page: 1, groupBy: 'month' });
-    const graphData = res2.data.data.edge;
+    try {
+      const res = await reportsAPI.getThisMonthSummary();
+      setPageData({
+        isLoading: false,
+        data: res.data.data[0]
+      });
+      const res2 = await reportsAPI.getReports({ limit: 12, page: 1, groupBy: 'month' });
+      const graphData = res2.data.data.edge;
 
-    const labels = graphData.map((data) => {
-      const date = new Date(data.date);
-      return months[date.getMonth()];
-    });
-    const data = graphData.map((data) => data.transactions);
+      const labels = graphData.map((data) => {
+        const date = new Date(data.date);
+        return months[date.getMonth()];
+      });
+      const data = graphData.map((data) => data.transactions);
 
-    setChartData({
-      labels: labels.reverse(),
-      datasets: [
-        {
-          label: 'Jumlah Transaksi Bulanan',
-          data: data.reverse(),
-          fill: false,
-          borderColor: 'rgb(120,180,235)',
-          tension: 0.1
-        }
-      ]
-    });
+      setChartData({
+        labels: labels.reverse(),
+        datasets: [
+          {
+            label: 'Jumlah Transaksi Bulanan',
+            data: data.reverse(),
+            fill: false,
+            borderColor: 'rgb(120,180,235)',
+            tension: 0.1
+          }
+        ]
+      });
+    } catch (error) {
+      setPageData({
+        isLoading: false,
+        data: null
+      });
+    }
   };
 
   useEffect(() => {
@@ -84,21 +90,25 @@ function InformasiPenjualan() {
         <Loader />
       ) : (
         <>
-          <div className="flex flex-col space-y-4">
-            <div className="flex flex-row space-x-4">
-              <InfoBox title="Jumlah Transaksi" info={pageData.data.transactions} />
-              <InfoBox title="Produk Terjual" info={pageData.data.soldItems} />
-              <InfoBox title="Total Pendapatan" info={formatPrice(pageData.data.grossProfit)} />
-              <InfoBox title="Total Pengeluaran" info={formatPrice(pageData.data.totalCogs)} />
-            </div>
-          </div>
-          <SubHeading>Grafik Penjualan</SubHeading>
-          <div className="flex flex-col space-y-4 max-w-2xl border px-12 py-8 rounded-md shadow-md">
-            <Line height={10} width={20} data={chartData} />
-            <div className="flex w-full justify-end">
-              <LinkButton to="/report">Lihat Selengkapnya</LinkButton>
-            </div>
-          </div>
+          {pageData.data !== null && (
+            <>
+              <div className="flex flex-col space-y-4">
+                <div className="flex flex-row space-x-4">
+                  <InfoBox title="Jumlah Transaksi" info={pageData.data.transactions} />
+                  <InfoBox title="Produk Terjual" info={pageData.data.soldItems} />
+                  <InfoBox title="Total Pendapatan" info={formatPrice(pageData.data.grossProfit)} />
+                  <InfoBox title="Total Pengeluaran" info={formatPrice(pageData.data.totalCogs)} />
+                </div>
+              </div>
+              <SubHeading>Grafik Penjualan</SubHeading>
+              <div className="flex flex-col space-y-4 max-w-2xl border px-12 py-8 rounded-md shadow-md">
+                <Line height={10} width={20} data={chartData} />
+                <div className="flex w-full justify-end">
+                  <LinkButton to="/report">Lihat Selengkapnya</LinkButton>
+                </div>
+              </div>
+            </>
+          )}
         </>
       )}
     </div>
