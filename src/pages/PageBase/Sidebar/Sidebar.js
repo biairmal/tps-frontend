@@ -44,7 +44,7 @@ function Sidebar({ isHidden, user }) {
           {['admin', 'distributor'].includes(user?.role) && (
             <>
               <CustomLink to="/report">Laporan Penjualan</CustomLink>
-              <CustomLink to="/items">Manajemen Stok</CustomLink>
+              <CustomLink to="/items">Manajemen Barang</CustomLink>
             </>
           )}
           {user?.role === 'distributor' && <CustomLink to="/users">Akun dan Pengguna</CustomLink>}

@@ -18,13 +18,11 @@ function InvoicePage() {
     transactionsAPI.downloadInvoice(filename).then((res) => {
       const blob = new Blob([res.data], { type: 'application/octetstream' });
       const url = URL.createObjectURL(blob);
-      console.log(url);
       setPdf({ url, blob });
     });
   }, []);
 
   const onDocumentLoadSuccess = ({ numPages }) => {
-    console.count('run');
     setNumPages(numPages);
   };
 

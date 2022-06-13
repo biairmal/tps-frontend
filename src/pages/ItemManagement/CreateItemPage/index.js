@@ -75,7 +75,7 @@ function CreateItemPage() {
             <NumberInput
               error={errors.quantity?.message}
               label="Jumlah*"
-              min={0}
+              min={1}
               name="quantity"
               placeholder="Masukkan jumlah..."
               register={register}
@@ -84,7 +84,7 @@ function CreateItemPage() {
             <NumberInput
               error={errors.cogs?.message}
               label="Modal penjualan*"
-              min={0}
+              min={1}
               name="cogs"
               placeholder="Masukkan modal penjualan..."
               register={register}
@@ -93,7 +93,7 @@ function CreateItemPage() {
             <NumberInput
               error={errors.normalPrice?.message}
               label="Harga Normal*"
-              min={0}
+              min={1}
               name="normalPrice"
               placeholder="Masukkan harga normal..."
               register={register}
@@ -101,7 +101,7 @@ function CreateItemPage() {
             <NumberInput
               error={errors.dealerPrice?.message}
               label="Harga Dealer*"
-              min={0}
+              min={1}
               name="dealerPrice"
               placeholder="Masukkan harga dealer..."
               register={register}
@@ -114,6 +114,7 @@ function CreateItemPage() {
               name="tax"
               placeholder="Masukkan pajak... (%)"
               register={register}
+              defaultValue={10}
             />
             <NumberInput
               error={errors.discount?.message}
@@ -123,6 +124,7 @@ function CreateItemPage() {
               name="discount"
               placeholder="Masukkan discount... (%)"
               register={register}
+              defaultValue={0}
             />
           </div>
           {/* Right content */}

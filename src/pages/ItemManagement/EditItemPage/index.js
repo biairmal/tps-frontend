@@ -42,7 +42,6 @@ function EditItemPage() {
 
   const submitForm = async (data) => {
     try {
-      setIsLoading(true);
       const updateData = new FormData();
 
       if (Object.keys(dirtyFields).length < 1) {
@@ -57,6 +56,7 @@ function EditItemPage() {
         updateData.append(field, data[field]);
       });
 
+      setIsLoading(true);
       const res = await itemsAPI.updateItem(id, updateData);
       setIsLoading(false);
 
@@ -67,6 +67,7 @@ function EditItemPage() {
         }, 1000);
       }
     } catch (error) {
+      setIsLoading(false);
       if (error.response.status === 400) {
         error.response.data.errors.map((field) =>
           setError(field.param, { type: 'custom', message: field.msg })

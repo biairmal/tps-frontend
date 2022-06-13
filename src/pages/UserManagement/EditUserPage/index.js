@@ -48,15 +48,17 @@ function EditUserPage() {
 
   const submitForm = async (data) => {
     try {
-      setIsLoading(true);
       const updateData = {};
 
-      if (Object.keys(dirtyFields).length < 1) {
+      if (Object.keys(dirtyFields).length) {
+        Object.keys(dirtyFields).map((field) => {
+          if (data[field] || ['lastName'].includes(field)) updateData[field] = data[field];
+        });
+      } else {
         return snackbarRef.current.error('Mohon update data terlebih dahulu!');
       }
 
-      Object.keys(dirtyFields).map((field) => (updateData[field] = data[field]));
-
+      setIsLoading(true);
       const res = await usersAPI.updateUser(id, updateData);
       setIsLoading(false);
 
@@ -67,6 +69,7 @@ function EditUserPage() {
         }, 1000);
       }
     } catch (error) {
+      setIsLoading(false);
       if (error.response.status === 400) {
         error.response.data.errors.map((field) =>
           setError(field.param, { type: 'custom', message: field.msg })

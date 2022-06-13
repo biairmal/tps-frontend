@@ -42,12 +42,16 @@ function Pagination({ currentPage, setCurrentPage, hasNext, hasPrev, totalPages,
           </Button>
           <input
             type="number"
-            className="w-10 border-2 text-center text-lg pl-3 appearance-none outline-none"
+            className="w-max border-2 text-center text-lg pl-3 appearance-none outline-none"
             value={currentPage}
             min={1}
             max={totalPages}
             onChange={(e) => {
-              onPageSelect(parseInt(e.target.value, 10));
+              if (e.target.value > totalPages) {
+                onPageSelect(totalPages);
+              } else {
+                onPageSelect(parseInt(e.target.value, 10));
+              }
             }}
           />
           <Button onClick={() => onNextPage()} disabled={!canGoNext}>

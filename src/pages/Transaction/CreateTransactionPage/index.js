@@ -44,11 +44,17 @@ function CreateTransactionPage() {
   const cartAddItem = (item) => {
     resetItem();
     const findIndex = cartData.findIndex((cartItem) => cartItem.item.id === item.item.id);
+    if (item.quantity > item.item.quantity) {
+      return snackbarRef.current.error('Mohon tidak melebihi stok barang');
+    }
     if (findIndex < 0) {
       setCartData((prev) => [...prev, item]);
     } else {
       let cartDataCopy = [...cartData];
       let itemToUpdate = cartDataCopy[findIndex];
+      if (itemToUpdate.quantity + item.quantity > item.item.quantity) {
+        return snackbarRef.current.error('Mohon tidak melebihi stok barang');
+      }
       itemToUpdate.quantity += item.quantity;
       cartDataCopy[findIndex] = itemToUpdate;
       setCartData(cartDataCopy);
@@ -65,13 +71,13 @@ function CreateTransactionPage() {
     try {
       if (cartData.length < 1)
         return snackbarRef.current.error('Mohon input barang terlebih dahulu');
-      setIsLoading(true);
       const buyer = data;
       const reqData = {
         buyer,
         items: cartData.map((row) => ({ id: row.item.id, quantity: row.quantity }))
       };
 
+      setIsLoading(true);
       const res = await transactionsAPI.createTransaction(reqData);
       setIsLoading(false);
 
@@ -83,6 +89,7 @@ function CreateTransactionPage() {
         }, 1000);
       }
     } catch (error) {
+      setIsLoading(false);
       console.log(error?.response);
     }
   };
@@ -111,7 +118,7 @@ function CreateTransactionPage() {
         <h3 className="text-xl font-medium text-sky-500 mb-4">Tambahkan Produk</h3>
         <ItemCombobox
           name="item"
-          errors={itemErrors}
+          error={itemErrors.item?.message}
           register={setValue}
           searchCallback={searchItems}
         />

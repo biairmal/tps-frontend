@@ -19,6 +19,7 @@ function CreateUserPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(createUserSchema),
@@ -41,7 +42,13 @@ function CreateUserPage() {
         }, 1000);
       }
     } catch (error) {
-      console.log(error);
+      setIsLoading(false);
+      console.log(error.response);
+      if (error.response.status === 400) {
+        console.log('Bad req');
+      } else if (error.response.status === 409) {
+        setError('username', { type: 'custom', message: 'Username already exists' });
+      }
     }
   };
 

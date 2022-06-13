@@ -36,7 +36,7 @@ function ItemCombobox({ name, error, register, searchCallback }) {
 
   const displayValue = useCallback((item) => {
     if (!item) return '';
-    return `${item?.code} - ${item?.name}`;
+    return `${item?.code} - ${item?.name} - Stok:${item?.quantity}`;
   });
 
   return (
@@ -46,9 +46,10 @@ function ItemCombobox({ name, error, register, searchCallback }) {
       <Combobox onChange={valueOnChangeCallback} value={selectedItem}>
         <Combobox.Input
           autoComplete="off"
-          className="w-full py-2 pl-3 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
+          className={`w-full py-2 pl-3 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
           focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
-          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none"
+          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+          ${error && 'border-rose-500 text-rose-500 focus:border-rose-500 focus:ring-rose-500'}`}
           displayValue={displayValue}
           onChange={inputOnChangeCallback}
           placeholder="Ketikkan kode atau nama barang..."

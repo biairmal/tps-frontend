@@ -10,7 +10,8 @@ function NumberInput({
   onChange,
   placeholder,
   register,
-  step
+  step,
+  defaultValue
 }) {
   return (
     <div>
@@ -23,9 +24,13 @@ function NumberInput({
         disabled={disabled}
         max={max}
         min={min}
+        onKeyDown={(e) => {
+          ['e', 'E', '+', '-'].includes(e.key) && e.preventDefault();
+        }}
         onChange={onChange}
         placeholder={placeholder}
         step={step}
+        defaultValue={defaultValue}
         type="number"
         {...register(name)}
       />
@@ -53,7 +58,8 @@ NumberInput.propTypes = {
   onChange: PropTypes.func,
   placeholder: PropTypes.string,
   register: PropTypes.any,
-  step: PropTypes.number
+  step: PropTypes.number,
+  defaultValue: PropTypes.number
 };
 
 export default NumberInput;

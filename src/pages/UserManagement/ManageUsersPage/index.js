@@ -90,8 +90,8 @@ function ManageUserPage() {
           <ConfirmationModal
             isOpen={modalIsOpen}
             closeModal={closeModal}
-            title="Hapus Barang?"
-            description="Apakah anda yakin ingin menghapus barang ini? Penghapusan tidak dapat dibatalkan setelah dilakukan."
+            title="Hapus Pengguna?"
+            description="Apakah anda yakin ingin menghapus pengguna ini? Penghapusan tidak dapat dibatalkan setelah dilakukan."
             proceed="Hapus"
             cancel="Batalkan"
             handler={deleteUser}

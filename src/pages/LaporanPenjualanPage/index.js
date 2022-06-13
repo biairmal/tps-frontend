@@ -67,7 +67,10 @@ function LaporanPenjualan() {
                 className={`border-2 border-sky-500 w-min px-2 py-1 text-sm rounded-md font-semibold
                 ${value === groupBy ? 'bg-sky-500 text-white' : 'text-sky-400 bg-transparent'}`}
                 key={label}
-                onClick={() => setGroupBy(value)}
+                onClick={() => {
+                  setCurrentPage(1);
+                  setGroupBy(value);
+                }}
               >
                 {label}
               </button>
