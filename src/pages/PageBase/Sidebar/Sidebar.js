@@ -4,7 +4,7 @@ import { ChevronDownIcon } from '@heroicons/react/solid';
 import CustomLink from './CustomLink';
 import SubCustomLink from './SubCustomLink';
 
-function Sidebar({ isHidden, user }) {
+function Sidebar({ isHidden, isSmallScreen, user }) {
   return (
     <Transition
       show={!isHidden}
@@ -16,7 +16,7 @@ function Sidebar({ isHidden, user }) {
       leaveTo="opacity-0"
     >
       <div
-        className={`bg-gray-100 w-72 h-screen pt-14 no-scrollbar overflow-y-auto sticky top-0 left-0`}
+        className={`bg-gray-100 w-72 h-screen pt-14 no-scrollbar overflow-y-auto ${isSmallScreen ? 'fixed border-r' : 'sticky'} top-0 left-0`}
       >
         <div className="px-4 pt-4 pb-2 text-sm text-gray-500 font-extrabold">Menu</div>
         <div>
@@ -56,6 +56,7 @@ function Sidebar({ isHidden, user }) {
 
 Sidebar.propTypes = {
   isHidden: PropTypes.bool,
+  isSmallScreen: PropTypes.bool,
   user: PropTypes.object
 };
 

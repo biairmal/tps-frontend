@@ -43,9 +43,10 @@ function CreateUserPage() {
       }
     } catch (error) {
       setIsLoading(false);
-      console.log(error.response);
       if (error.response.status === 400) {
-        console.log('Bad req');
+        error.response.data.errors.map((field) =>
+          setError(field.param, { type: 'custom', message: field.msg })
+        );
       } else if (error.response.status === 409) {
         setError('username', { type: 'custom', message: 'Username already exists' });
       }

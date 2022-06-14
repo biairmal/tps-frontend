@@ -8,11 +8,17 @@ import Sidebar from './Sidebar/Sidebar';
 import { UserContext } from 'context/UserContext';
 
 function PageBase({ children }) {
-  const [hideSidebar, setHideSidebar] = useState(false);
+  const minDesktopWidth = 1366;
+  const [hideSidebar, setHideSidebar] = useState(window.innerWidth < minDesktopWidth);
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
 
+  const updateMedia = () => {
+    setHideSidebar(window.innerWidth < minDesktopWidth);
+  };
+
   useEffect(() => {
+    window.addEventListener('resize', updateMedia);
     Api.interceptors.response.use(
       (response) => response,
       (error) => {
@@ -35,14 +41,19 @@ function PageBase({ children }) {
         return Promise.reject(error);
       }
     );
+    return () => window.removeEventListener('resize', updateMedia);
   }, []);
 
   return (
     <div>
       <Navbar toggleSidebar={setHideSidebar} />
-      <div className="w-full flex flex-row">
-        <Sidebar isHidden={hideSidebar} user={user} />
-        <main className="flex-1 pt-24 pb-32 px-12 overscroll-contain">{children}</main>
+      <div className="w-full min-w-max h-screen flex flex-row">
+        <Sidebar
+          isHidden={hideSidebar}
+          isSmallScreen={window.innerWidth < minDesktopWidth}
+          user={user}
+        />
+        <main className="flex-1 pt-24 pb-32 px-12 overflow-x-scroll">{children}</main>
       </div>
     </div>
   );

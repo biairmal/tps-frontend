@@ -13,7 +13,7 @@ function Table({ columns, data }) {
   return (
     <table
       {...getTableProps()}
-      className="text-sm overflow-hidden w-full border-separate rounded-lg shadow"
+      className="text-sm w-full border-separate rounded-lg shadow"
     >
       <thead className="bg-sky-500 text-white">
         {headerGroups.map((headerGroup) => (
@@ -22,7 +22,7 @@ function Table({ columns, data }) {
               <th
                 key={column.id}
                 {...column.getHeaderProps()}
-                className="py-2 first:rounded-tl-lg last:rounded-tr-lg"
+                className="p-2 first:rounded-tl-lg last:rounded-tr-lg"
               >
                 {column.render('Header')}
               </th>
@@ -40,7 +40,7 @@ function Table({ columns, data }) {
               className="tr bg-white odd:bg-gray-50 text-center"
             >
               {row.cells.map((cell, index) => (
-                <td key={index} className="py-2 px-8 ">
+                <td key={index} className="p-2">
                   {cell.render('Cell')}
                 </td>
               ))}
