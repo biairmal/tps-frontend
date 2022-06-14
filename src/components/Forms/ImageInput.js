@@ -5,7 +5,7 @@ import checkURL from 'helpers/checkURL';
 function ImageInput({ error, label, name, register, watchImage }) {
   const imageURL = useMemo(() => {
     if (typeof watchImage === 'string' && checkURL(watchImage)) return watchImage;
-    if (watchImage?.length > 0) {
+    if (watchImage?.length > 0 && watchImage !== 'undefined') {
       return URL.createObjectURL(watchImage[0]);
     }
 

@@ -1,14 +1,16 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import authAPI from 'api/authAPI';
 import { TextInput, PasswordInput } from 'components/Forms';
+import Loader from 'components/Loader/Loader';
 import { SnackbarContext } from 'context/SnackbarContext';
 import { UserContext } from 'context/UserContext';
 import { loginSchema } from 'validations/authSchema';
 
 function LoginPage() {
+  const [isLoading, setIsLoading] = useState(false);
   const { user, setUser } = useContext(UserContext);
   const snackbarRef = useContext(SnackbarContext);
   const {
@@ -19,15 +21,22 @@ function LoginPage() {
 
   const submitForm = async (data) => {
     try {
+      setIsLoading(true);
       const res = await authAPI.login(data);
+      setIsLoading(false);
       setUser(res.data.data);
     } catch (error) {
-      snackbarRef.current.error('Login gagal!');
+      setIsLoading(false);
+      if (error.response.status === 401)
+        return snackbarRef.current.error('Username atau password salah!');
+      else return snackbarRef.current.error('Login gagal!');
     }
   };
 
   return (
     <div className="bg-gray-100 w-screen min-h-screen py-52">
+      {isLoading && <Loader />}
+
       <form onSubmit={handleSubmit(submitForm)}>
         <div className="bg-white max-w-xl mx-auto rounded-lg p-12 drop-shadow-lg flex flex-col space-y-8">
           <h1 className="text-2xl text-center font-bold">

@@ -45,7 +45,9 @@ function ManageItemPage() {
   };
 
   const deleteItem = async () => {
+    setPageData((prev) => ({ ...prev, ...{ isLoading: true } }));
     const res = await itemsAPI.deleteItemById(selectedItem);
+    setPageData((prev) => ({ ...prev, ...{ isLoading: false } }));
     closeModal();
     if (res.status === 200) {
       fetchData();

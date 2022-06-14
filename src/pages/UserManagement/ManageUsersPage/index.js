@@ -45,7 +45,9 @@ function ManageUserPage() {
   };
 
   const deleteUser = async () => {
+    setPageData((prev) => ({ ...prev, ...{ isLoading: true } }));
     const res = await usersAPI.deleteUserById(selectedUser);
+    setPageData((prev) => ({ ...prev, ...{ isLoading: false } }));
     closeModal();
     if (res.status === 200) {
       fetchData();

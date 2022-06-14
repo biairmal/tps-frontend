@@ -23,7 +23,7 @@ const Snackbar = forwardRef((props, ref) => {
     setIsOpen(true);
     setInterval(() => {
       setIsOpen(false);
-    }, 3000);
+    }, 4000);
   };
 
   const success = (message) => {
