@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types';
 import Table from 'components/Table/Table';
-import { PriceCell } from 'components/Table/Cells';
+import { DateCell, PriceCell } from 'components/Table/Cells';
 import InvoiceButton from './InvoiceButton';
 
 function TransactionTable({ data }) {
   const columns = [
+    {
+      Header: 'Tanggal',
+      Cell: (props) => <DateCell {...props} columnName="createdAt" groupBy="day" />
+    },
     { Header: 'Total Produk', accessor: 'totalProducts' },
     { Header: 'Total Qty', accessor: 'totalQuantity' },
     { Header: 'Subtotal', Cell: (props) => <PriceCell {...props} columnName="subtotalPrice" /> },

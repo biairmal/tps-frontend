@@ -72,7 +72,9 @@ function EditItemPage() {
         error.response.data.errors.map((field) =>
           setError(field.param, { type: 'custom', message: field.msg })
         );
-      } else console.log(error);
+      } else if (error.response.status === 409) {
+        setError('code', { type: 'custom', message: 'Code already exists' });
+      }
     }
   };
 

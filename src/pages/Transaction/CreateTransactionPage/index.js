@@ -142,6 +142,7 @@ function CreateTransactionPage() {
           document.getElementById('submit_transaction').click();
         }}
       />
+      <h3 className="text-xl font-medium text-sky-500 mb-4">Daftar Pembelian</h3>
       <CartTable data={cartData} deleteFunction={cartDeleteItem} />
     </div>
   );

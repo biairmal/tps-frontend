@@ -74,7 +74,9 @@ function EditUserPage() {
         error.response.data.errors.map((field) =>
           setError(field.param, { type: 'custom', message: field.msg })
         );
-      } else console.log(error);
+      } else if (error.response.status === 409) {
+        setError('username', { type: 'custom', message: 'Username already exists' });
+      }
     }
   };
 

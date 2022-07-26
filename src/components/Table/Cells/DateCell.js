@@ -10,8 +10,8 @@ export const getTime = (date) => {
   return { day, month: months[month], year };
 };
 
-function DateCell({ row, groupBy }) {
-  const { day, month, year } = getTime(row.original.date);
+function DateCell({ row, groupBy, columnName='date' }) {
+  const { day, month, year } = getTime(row.original[columnName]);
 
   const formattedDate = () => {
     if (groupBy === 'day') return `${day} ${month} ${year}`;
@@ -23,6 +23,7 @@ function DateCell({ row, groupBy }) {
 }
 
 DateCell.propTypes = {
+  columnName: PropTypes.string,
   groupBy: PropTypes.string,
   row: PropTypes.object
 };

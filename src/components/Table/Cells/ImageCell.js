@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 function ImageCell({ row }) {
   if (row.original.picture) {
     return (
-      <div className="aspect-video w-32 my-2 rounded-md overflow-hidden">
-        <img alt="Item" className="object-contain w-full h-full" src={row.original.picture} />
+      <div className="flex justify-center">
+        <div className="aspect-video w-32 my-2 rounded-md overflow-hidden">
+          <img alt="Item" className="object-contain w-full h-full" src={row.original.picture} />
+        </div>
       </div>
     );
   }

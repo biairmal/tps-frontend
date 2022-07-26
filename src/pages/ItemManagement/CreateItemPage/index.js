@@ -14,6 +14,7 @@ function CreateItemPage() {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(createItemSchema),
@@ -43,7 +44,14 @@ function CreateItemPage() {
         }, 1000);
       }
     } catch (error) {
-      console.log(error.response);
+      setIsLoading(false);
+      if (error.response.status === 400) {
+        error.response.data.errors.map((field) =>
+          setError(field.param, { type: 'custom', message: field.msg })
+        );
+      } else if (error.response.status === 409) {
+        setError('code', { type: 'custom', message: 'Code already exists' });
+      }
     }
   };
 
@@ -108,7 +116,7 @@ function CreateItemPage() {
             />
             <NumberInput
               error={errors.tax?.message}
-              label="Pajak"
+              label="Pajak*"
               max={100}
               min={0}
               name="tax"
@@ -118,7 +126,7 @@ function CreateItemPage() {
             />
             <NumberInput
               error={errors.discount?.message}
-              label="Discount"
+              label="Discount*"
               max={100}
               min={0}
               name="discount"

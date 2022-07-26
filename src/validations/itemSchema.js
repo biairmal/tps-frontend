@@ -12,7 +12,7 @@ export const createItemSchema = yup.object().shape({
     .string()
     .required('Nama barang wajib diisi')
     .matches('^[a-zA-Z0-9 ]*$', 'Nama barang hanya boleh terdiri dari angka dan alfabet'),
-  description: yup.string().required('Deskripsi wajib diisi'),
+  description: yup.string(),
   // picture: yup.string().required(),
   quantity: yup.lazy((value) => {
     value = parseInt(value, 10);
@@ -67,7 +67,7 @@ export const createItemSchema = yup.object().shape({
         .number()
         .required('Discount wajib diisi')
         .min(0, 'Minimal discount 0')
-        .max(100, 'Maksimal pajak 100');
+        .max(100, 'Maksimal discount 100');
     else return yup.string().required('Discount harus diisi');
   })
 });
