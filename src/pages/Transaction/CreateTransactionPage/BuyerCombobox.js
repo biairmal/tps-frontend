@@ -4,19 +4,19 @@ import { Combobox } from '@headlessui/react';
 import { CheckIcon, XIcon } from '@heroicons/react/solid';
 import { debounce } from 'helpers/debounce';
 
-const ItemCombobox = forwardRef(({ name, error, register, searchCallback }, ref) => {
-  const [itemsData, setItemsData] = useState({
+const BuyerCombobox = forwardRef(({ error, register, searchCallback }, ref) => {
+  const [buyersData, setBuyersData] = useState({
     isLoading: false,
-    items: []
+    buyers: []
   });
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedBuyer, setSelectedBuyer] = useState(null);
 
   const debounceSearch = useMemo(
     () =>
       debounce((e) => {
         const { value } = e.target;
         if (value !== '') {
-          searchCallback(value).then((data) => setItemsData({ isLoading: false, items: data }));
+          searchCallback(value).then((data) => setBuyersData({ isLoading: false, buyers: data }));
         }
       }, 500),
     []
@@ -29,19 +29,19 @@ const ItemCombobox = forwardRef(({ name, error, register, searchCallback }, ref)
     [debounceSearch]
   );
 
-  const valueOnChangeCallback = useCallback((item) => {
-    setSelectedItem(item);
-    register(name, item);
+  const valueOnChangeCallback = useCallback((buyer) => {
+    setSelectedBuyer(buyer);
+    register(buyer);
   });
 
-  const displayValue = useCallback((item) => {
-    if (!item) return '';
-    return `${item?.code} - ${item?.name} - Stok:${item?.quantity}`;
+  const displayValue = useCallback((buyer) => {
+    if (!buyer) return '';
+    return `${buyer?.name} - ${buyer?.phone} - ${buyer?.email}`;
   });
 
   const deselect = () => {
-    setSelectedItem(null);
-    register(name, null);
+    setSelectedBuyer(null);
+    register(null);
   };
 
   useImperativeHandle(
@@ -54,36 +54,38 @@ const ItemCombobox = forwardRef(({ name, error, register, searchCallback }, ref)
 
   return (
     <div className="relative flex-grow">
-      <div className="font-medium mb-2">Pilih Produk</div>
+      <div className="font-medium mb-2">Pilih pembeli</div>
 
-      <Combobox onChange={valueOnChangeCallback} value={selectedItem} disabled={selectedItem}>
+      <Combobox onChange={valueOnChangeCallback} value={selectedBuyer} disabled={selectedBuyer}>
         <div>
           <Combobox.Input
             autoComplete="off"
             className={`w-full py-2 pl-3 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-          focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
-          disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
-          ${error && 'border-rose-500 text-rose-500 focus:border-rose-500 focus:ring-rose-500'}`}
+            focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+            disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none
+            ${error && 'border-rose-500 text-rose-500 focus:border-rose-500 focus:ring-rose-500'}`}
             displayValue={displayValue}
             onChange={inputOnChangeCallback}
-            placeholder="Ketikkan kode atau nama barang..."
+            placeholder="Ketikkan nama atau nomor telepon..."
           />
-          {selectedItem && (
+          {selectedBuyer && (
             <button
               className="absolute right-0 top-1/2 translate-y-2 -translate-x-1/2 bg-rose-500 rounded-sm"
-              onClick={deselect}
+              onClick={() => {
+                setSelectedBuyer(null);
+              }}
             >
               <XIcon className="w-4 h-4 text-white" />
             </button>
           )}
         </div>
-        <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-          {itemsData.items?.map((item, index) => (
+        <Combobox.Options className="absolute mt-1 max-h-60 w-full z-10 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          {buyersData.buyers?.map((item, index) => (
             <Combobox.Option key={index} value={item}>
               <div
                 className={`hover:bg-sky-500 hover:text-white bg-white text-black px-4 py-2 border-b border-gray-100 rounded-md flex flex-row space-x-1 items-center`}
               >
-                {item?.id === selectedItem?.id && <CheckIcon className="w-4 h-4" />}
+                {item?.id === selectedBuyer?.id && <CheckIcon className="w-4 h-4" />}
                 <div>{displayValue(item)}</div>
               </div>
             </Combobox.Option>
@@ -95,13 +97,13 @@ const ItemCombobox = forwardRef(({ name, error, register, searchCallback }, ref)
   );
 });
 
-ItemCombobox.displayName = 'ItemCombobox';
+BuyerCombobox.displayName = 'BuyerCombobox';
 
-ItemCombobox.propTypes = {
+BuyerCombobox.propTypes = {
   name: PropTypes.string,
   error: PropTypes.any,
   register: PropTypes.func,
   searchCallback: PropTypes.func
 };
 
-export default ItemCombobox;
+export default BuyerCombobox;

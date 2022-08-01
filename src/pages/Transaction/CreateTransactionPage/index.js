@@ -1,10 +1,10 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import itemsAPI from 'api/itemsAPI';
 import transactionsAPI from 'api/transactionsAPI';
-import { NumberInput, SubmitButton } from 'components/Forms';
+import { NumberInput, SelectInput, SubmitButton } from 'components/Forms';
 import Loader from 'components/Loader/Loader';
 import PrimaryButton from 'components/Buttons/PrimaryButton';
 import { Heading, SubHeading } from 'components/Text';
@@ -13,12 +13,14 @@ import { createBuyerSchema, addItemToCartSchema } from 'validations/transactionS
 import ItemCombobox from './ItemCombobox';
 import CartTable from './CartTable';
 import NewBuyerForms from './NewBuyerForms';
+import BuyerCombobox from './BuyerCombobox';
 
 function CreateTransactionPage() {
   const {
     register: registerBuyer,
     handleSubmit,
-    formState: { errors: buyerErrors }
+    formState: { errors: buyerErrors },
+    reset: resetBuyer
   } = useForm({
     resolver: yupResolver(createBuyerSchema),
     mode: 'onSubmit'
@@ -27,7 +29,7 @@ function CreateTransactionPage() {
   const {
     register: registerItem,
     handleSubmit: handleItemSubmit,
-    setValue,
+    setValue: setItemValue,
     reset: resetItem,
     formState: { errors: itemErrors }
   } = useForm({
@@ -36,14 +38,18 @@ function CreateTransactionPage() {
   });
 
   const navigate = useNavigate();
+  const itemComboboxRef = useRef()
   const snackbarRef = useContext(SnackbarContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const [cartData, setCartData] = useState([]);
+  
 
   const cartAddItem = (item) => {
+    console.log(item)
     resetItem();
     const findIndex = cartData.findIndex((cartItem) => cartItem.item.id === item.item.id);
+    itemComboboxRef.current.deselect()
     if (item.quantity > item.item.quantity) {
       return snackbarRef.current.error('Mohon tidak melebihi stok barang');
     }
@@ -69,6 +75,7 @@ function CreateTransactionPage() {
 
   const createTransaction = async (data) => {
     try {
+      console.log(data);
       if (cartData.length < 1)
         return snackbarRef.current.error('Mohon input barang terlebih dahulu');
       const buyer = data;
@@ -76,6 +83,8 @@ function CreateTransactionPage() {
         buyer,
         items: cartData.map((row) => ({ id: row.item.id, quantity: row.quantity }))
       };
+
+      console.log(reqData);
 
       setIsLoading(true);
       const res = await transactionsAPI.createTransaction(reqData);
@@ -100,6 +109,21 @@ function CreateTransactionPage() {
     return [];
   };
 
+  const searchBuyers = async (searchValue) => {
+    const res = await transactionsAPI.getBuyers({ limit: 10, page: 1, search: searchValue });
+    if (res.status === 200) return res.data.data.edge;
+    return [];
+  };
+
+  const [isNewBuyer, setIsNewBuyer] = useState(true);
+
+  useEffect(() => {
+    resetBuyer({})
+    console.log('test')
+    
+  }, [isNewBuyer])
+  
+
   return (
     <div className="flex flex-col space-y-8">
       <Heading>Panel Transaksi</Heading>
@@ -109,17 +133,46 @@ function CreateTransactionPage() {
 
       {/* Buyer Form */}
       <form onSubmit={handleSubmit(createTransaction)} className="max-w-xl space-y-4">
-        <h3 className="text-xl font-medium text-sky-500 mb-4">Data Pembeli</h3>
-        <NewBuyerForms errors={buyerErrors} register={registerBuyer} />
+        <h3 className="text-xl font-medium text-sky-500">Data Pembeli</h3>
+        <PrimaryButton
+          text={isNewBuyer ? 'Cari Pembeli Lama' : 'Buat Pembeli Baru'}
+          onClick={() => {
+            setIsNewBuyer(!isNewBuyer);
+          }}
+        />
+        {isNewBuyer ? (
+          <NewBuyerForms errors={buyerErrors} register={registerBuyer} />
+        ) : (
+          <BuyerCombobox
+            name="buyer"
+            error={buyerErrors.name?.message}
+            register={resetBuyer}
+            searchCallback={searchBuyers}
+          />
+        )}
+        <SelectInput
+          label="Tipe Customer"
+          name="customerType"
+          error={buyerErrors.customerType?.message}
+          register={registerBuyer}
+          placeholder="Tentukan Tipe Harga..."
+          defaultValue={'customer'}
+          options={[
+            { option: 'Customer', value: 'customer' },
+            { option: 'Dealer', value: 'dealer' }
+          ]}
+        />
+        <SubmitButton id="submit_transaction" hidden={true} />
       </form>
 
       {/* Item Form */}
       <form onSubmit={handleItemSubmit(cartAddItem)} className="max-w-xl space-y-4">
         <h3 className="text-xl font-medium text-sky-500 mb-4">Tambahkan Produk</h3>
         <ItemCombobox
+          ref={itemComboboxRef}
           name="item"
           error={itemErrors.item?.message}
-          register={setValue}
+          register={setItemValue}
           searchCallback={searchItems}
         />
         <div className="flex flex-row w-full items-end space-x-2">

@@ -8,15 +8,15 @@ function Sidebar({ isHidden, isSmallScreen, user }) {
   return (
     <Transition
       show={!isHidden}
-      enter="transition-opacity ease-in duration-200 z-10"
+      enter="transition-opacity ease-in duration-200 z-20"
       enterFrom="opacity-0"
       enterTo="opacity-100"
-      leave="transition-opacity duration-200 z-10"
+      leave="transition-opacity duration-200 z-20"
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
       <div
-        className={`bg-gray-100 w-72 z-10 h-screen pt-14 no-scrollbar overflow-y-auto ${isSmallScreen ? 'fixed border-r' : 'sticky'} top-0 left-0`}
+        className={`bg-gray-100 w-72 z-20 h-screen pt-14 no-scrollbar overflow-y-auto ${isSmallScreen ? 'fixed border-r' : 'sticky'} top-0 left-0`}
       >
         <div className="px-4 pt-4 pb-2 text-sm text-gray-500 font-extrabold">Menu</div>
         <div>

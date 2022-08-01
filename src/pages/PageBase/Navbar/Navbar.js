@@ -4,7 +4,7 @@ import Dropdown from './Drowpdown';
 
 function Navbar({ toggleSidebar }) {
   return (
-    <div className="bg-neutral-800 p-2 w-full flex flex-row justify-between fixed top-0 z-20">
+    <div className="bg-neutral-800 p-2 w-full flex flex-row justify-between fixed top-0 z-30">
       <div className="flex flex-row space-x-2 items-center">
         <button
           className="p-1 rounded-md hover:bg-white hover:bg-opacity-10"

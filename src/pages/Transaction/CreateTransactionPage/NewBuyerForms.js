@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { SelectInput, SubmitButton, TextInput } from 'components/Forms';
+import { TextInput } from 'components/Forms';
 
 function NewBuyerForms({ errors, register }) {
   return (
@@ -57,19 +57,7 @@ function NewBuyerForms({ errors, register }) {
           placeholder="Masukkan negara asal..."
         />
       </div>
-      <SelectInput
-        label="Tipe Customer"
-        name="customerType"
-        error={errors.customerType?.message}
-        register={register}
-        placeholder="Tentukan Tipe Harga..."
-        defaultValue={'customer'}
-        options={[
-          { option: 'Customer', value: 'customer' },
-          { option: 'Dealer', value: 'dealer' }
-        ]}
-      />
-      <SubmitButton id="submit_transaction" hidden={true} />
+
     </>
   );
 }

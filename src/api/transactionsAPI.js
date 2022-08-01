@@ -1,3 +1,4 @@
+import queryBuilder from 'helpers/queryBuilder';
 import Api from './api';
 
 const transactionsAPI = {
@@ -12,6 +13,10 @@ const transactionsAPI = {
   },
   downloadInvoice(filename) {
     return Api.get(`/files/${filename}`, { responseType: 'blob' });
+  },
+  getBuyers(query) {
+    const queryString = queryBuilder(query);
+    return Api.get(`/buyers?${queryString}`);
   }
 };
 
